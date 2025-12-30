@@ -1,0 +1,37 @@
+id: ecommerce_L2_001
+version: "1.0"
+domain: ecommerce
+complexity: L2
+question:
+  en: "What are the top 5 products by sales volume?"
+  zh: "销量最高的前5个产品是什么？"
+golden_sql: |
+  SELECT product_name, SUM(quantity) as total_quantity
+  FROM order_items
+  JOIN products ON order_items.product_id = products.id
+  GROUP BY product_name
+  ORDER BY total_quantity DESC
+  LIMIT 5
+dependencies:
+  tables:
+    - order_items
+    - products
+  features:
+    - JOIN
+    - GROUP BY
+    - ORDER BY
+    - LIMIT
+    - SUM
+tags:
+  - join
+  - aggregation
+  - ranking
+  - top-n
+metadata:
+  difficulty: medium
+  estimated_time_ms: 500
+  author: "PowerData Community"
+  created_at: "2024-01-01"
+comparison_rules:
+  row_order_matters: true
+  column_order_matters: true

@@ -1,0 +1,22 @@
+id: ecommerce_L1_001
+version: "1.0"
+domain: ecommerce
+complexity: L1
+question:
+  en: "How many users are there in total?"
+  zh: "总共有多少个用户？"
+golden_sql: "SELECT COUNT(*) as count FROM users"
+dependencies:
+  tables:
+    - users
+  features:
+    - COUNT
+tags:
+  - basic
+  - aggregation
+  - count
+metadata:
+  difficulty: easy
+  estimated_time_ms: 100
+  author: "PowerData Community"
+  created_at: "2024-01-01"

@@ -1,0 +1,32 @@
+{
+  "run_id": "run_002",
+  "timestamp": "2025-01-08T10:00:00",
+  "system_name": "NL2SQL System v1.1",
+  "overall_score": 82.0,
+  "accuracy_rate": 0.82,
+  "total_questions": 100,
+  "correct_answers": 82,
+  "performance_metrics": {
+    "median_time_ms": 1800,
+    "mean_time_ms": 1900,
+    "p50": 1800,
+    "p95": 3200,
+    "p99": 3800,
+    "min_time_ms": 1300,
+    "max_time_ms": 4500,
+    "std_dev": 550,
+    "measurements": [],
+    "nl2sql_time_ms": null,
+    "sql_generation_time_ms": null,
+    "sql_execution_time_ms": null
+  },
+  "total_cost": 2.3,
+  "avg_cost_per_query": 0.023,
+  "robustness_pass_rate": 0.78,
+  "metadata": {
+    "model": "gpt-4-turbo",
+    "database": "PostgreSQL",
+    "version": "1.1.0",
+    "changes": "Optimized prompts"
+  }
+}

@@ -1,0 +1,26 @@
+id: ecommerce_L1_002
+version: "1.0"
+domain: ecommerce
+complexity: L1
+question:
+  en: "What is the average order amount?"
+  zh: "平均订单金额是多少？"
+golden_sql: "SELECT AVG(amount) as avg FROM orders"
+dependencies:
+  tables:
+    - orders
+  features:
+    - AVG
+tags:
+  - basic
+  - aggregation
+  - average
+metadata:
+  difficulty: easy
+  estimated_time_ms: 100
+  author: "PowerData Community"
+  created_at: "2024-01-01"
+comparison_rules:
+  row_order_matters: false
+  float_tolerance: 0.01
+  float_comparison_mode: "relative_error"

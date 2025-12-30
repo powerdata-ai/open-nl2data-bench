@@ -1,0 +1,139 @@
+# Payment Domain - L1 Basic Questions
+# Simple payment queries
+
+questions:
+  - question_id: "PAY-L1-001"
+    difficulty_level: "L1"
+    business_department: "支付管理"
+    question_text: "查询今天的支付订单列表"
+
+    business_scenario: "支付中心日常监控"
+    expected_insight: "了解当日支付情况"
+
+    target_tables:
+      - "pay_payment_order"
+    sql_patterns:
+      - "simple_filter"
+      - "date_function"
+
+    golden_sql: |
+      SELECT
+          payment_id,
+          payment_no,
+          business_no,
+          user_id,
+          payment_amount,
+          payment_method,
+          payment_status,
+          request_time,
+          payment_time
+      FROM pay_payment_order
+      WHERE DATE(request_time) = CURRENT_DATE
+      ORDER BY request_time DESC;
+
+    result_columns:
+      - payment_id
+      - payment_no
+      - business_no
+      - user_id
+      - payment_amount
+      - payment_method
+      - payment_status
+      - request_time
+      - payment_time
+
+    data_quality_tier: "high"
+    created_by: "PowerData Team"
+    created_at: "2025-01-01"
+    tags:
+      - "支付查询"
+      - "日期过滤"
+
+  - question_id: "PAY-L1-002"
+    difficulty_level: "L1"
+    business_department: "支付管理"
+    question_text: "查询支付失败的订单"
+
+    business_scenario: "支付异常监控"
+    expected_insight: "排查支付失败原因，提升支付成功率"
+
+    target_tables:
+      - "pay_payment_order"
+    sql_patterns:
+      - "status_filter"
+
+    golden_sql: |
+      SELECT
+          payment_id,
+          payment_no,
+          business_no,
+          user_id,
+          payment_amount,
+          payment_method,
+          channel_code,
+          request_time
+      FROM pay_payment_order
+      WHERE payment_status = 3  -- 支付失败
+        AND request_time >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+      ORDER BY request_time DESC;
+
+    result_columns:
+      - payment_id
+      - payment_no
+      - business_no
+      - user_id
+      - payment_amount
+      - payment_method
+      - channel_code
+      - request_time
+
+    data_quality_tier: "high"
+    created_by: "PowerData Team"
+    created_at: "2025-01-01"
+    tags:
+      - "支付查询"
+      - "异常监控"
+      - "支付失败"
+
+  - question_id: "PAY-L1-003"
+    difficulty_level: "L1"
+    business_department: "账户管理"
+    question_text: "查询特定用户的账户余额"
+
+    business_scenario: "用户账户查询"
+    expected_insight: "了解用户账户余额状况"
+
+    target_tables:
+      - "pay_account_balance"
+    sql_patterns:
+      - "simple_filter"
+
+    golden_sql: |
+      SELECT
+          account_id,
+          user_id,
+          balance,
+          frozen_balance,
+          total_recharge,
+          total_consume,
+          total_withdraw,
+          account_status
+      FROM pay_account_balance
+      WHERE user_id = 12345;
+
+    result_columns:
+      - account_id
+      - user_id
+      - balance
+      - frozen_balance
+      - total_recharge
+      - total_consume
+      - total_withdraw
+      - account_status
+
+    data_quality_tier: "high"
+    created_by: "PowerData Team"
+    created_at: "2025-01-01"
+    tags:
+      - "账户查询"
+      - "余额查询"

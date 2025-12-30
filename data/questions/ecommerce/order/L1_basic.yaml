@@ -1,0 +1,218 @@
+# Order Domain - L1 Basic Questions
+# Single table queries with simple filters
+
+questions:
+  - question_id: "ORD-L1-001"
+    difficulty_level: "L1"
+    business_department: "订单管理"
+    question_text: "查询今天创建的所有订单"
+
+    business_scenario: "订单中心日常运营监控"
+    expected_insight: "了解当日订单量和订单金额分布"
+
+    target_tables:
+      - "ord_order_main"
+    sql_patterns:
+      - "simple_filter"
+      - "date_function"
+
+    golden_sql: |
+      SELECT
+          order_id,
+          order_no,
+          user_id,
+          total_amount,
+          actual_amount,
+          order_status,
+          order_time
+      FROM ord_order_main
+      WHERE DATE(order_time) = CURRENT_DATE
+        AND is_deleted = 0
+      ORDER BY order_time DESC;
+
+    result_columns:
+      - order_id
+      - order_no
+      - user_id
+      - total_amount
+      - actual_amount
+      - order_status
+      - order_time
+
+    data_quality_tier: "high"
+    created_by: "PowerData Team"
+    created_at: "2025-01-01"
+    tags:
+      - "订单查询"
+      - "日期过滤"
+      - "基础查询"
+
+  - question_id: "ORD-L1-002"
+    difficulty_level: "L1"
+    business_department: "订单管理"
+    question_text: "查询订单状态为'待支付'的订单列表"
+
+    business_scenario: "订单中心待支付订单跟进"
+    expected_insight: "查看有多少订单在等待用户支付，便于催付"
+
+    target_tables:
+      - "ord_order_main"
+    sql_patterns:
+      - "simple_filter"
+      - "status_filter"
+
+    golden_sql: |
+      SELECT
+          order_id,
+          order_no,
+          user_id,
+          actual_amount,
+          order_time,
+          TIMESTAMPDIFF(MINUTE, order_time, NOW()) as waiting_minutes
+      FROM ord_order_main
+      WHERE order_status = 0  -- 待支付
+        AND is_deleted = 0
+      ORDER BY order_time ASC;
+
+    result_columns:
+      - order_id
+      - order_no
+      - user_id
+      - actual_amount
+      - order_time
+      - waiting_minutes
+
+    data_quality_tier: "high"
+    created_by: "PowerData Team"
+    created_at: "2025-01-01"
+    tags:
+      - "订单查询"
+      - "状态过滤"
+      - "待支付订单"
+
+  - question_id: "ORD-L1-003"
+    difficulty_level: "L1"
+    business_department: "订单管理"
+    question_text: "查询订单金额大于1000元的订单"
+
+    business_scenario: "大额订单监控"
+    expected_insight: "关注高价值订单，重点跟进"
+
+    target_tables:
+      - "ord_order_main"
+    sql_patterns:
+      - "simple_filter"
+      - "numeric_comparison"
+
+    golden_sql: |
+      SELECT
+          order_id,
+          order_no,
+          user_id,
+          total_amount,
+          discount_amount,
+          actual_amount,
+          order_status,
+          order_time
+      FROM ord_order_main
+      WHERE actual_amount > 1000
+        AND is_deleted = 0
+      ORDER BY actual_amount DESC;
+
+    result_columns:
+      - order_id
+      - order_no
+      - user_id
+      - total_amount
+      - discount_amount
+      - actual_amount
+      - order_status
+      - order_time
+
+    data_quality_tier: "high"
+    created_by: "PowerData Team"
+    created_at: "2025-01-01"
+    tags:
+      - "订单查询"
+      - "金额过滤"
+      - "大额订单"
+
+  - question_id: "ORD-L1-004"
+    difficulty_level: "L1"
+    business_department: "订单管理"
+    question_text: "查询特定用户（user_id=12345）的所有订单"
+
+    business_scenario: "客服查询用户订单历史"
+    expected_insight: "了解用户的购买历史，便于客服处理问题"
+
+    target_tables:
+      - "ord_order_main"
+    sql_patterns:
+      - "simple_filter"
+      - "user_filter"
+
+    golden_sql: |
+      SELECT
+          order_id,
+          order_no,
+          total_amount,
+          actual_amount,
+          order_status,
+          order_time,
+          payment_time
+      FROM ord_order_main
+      WHERE user_id = 12345
+        AND is_deleted = 0
+      ORDER BY order_time DESC;
+
+    result_columns:
+      - order_id
+      - order_no
+      - total_amount
+      - actual_amount
+      - order_status
+      - order_time
+      - payment_time
+
+    data_quality_tier: "high"
+    created_by: "PowerData Team"
+    created_at: "2025-01-01"
+    tags:
+      - "订单查询"
+      - "用户过滤"
+      - "客服查询"
+
+  - question_id: "ORD-L1-005"
+    difficulty_level: "L1"
+    business_department: "订单管理"
+    question_text: "查询最近7天内已完成的订单数量"
+
+    business_scenario: "订单完成情况统计"
+    expected_insight: "了解近期订单完成量"
+
+    target_tables:
+      - "ord_order_main"
+    sql_patterns:
+      - "date_range"
+      - "count_aggregation"
+
+    golden_sql: |
+      SELECT
+          COUNT(*) as completed_order_count,
+          SUM(actual_amount) as total_amount
+      FROM ord_order_main
+      WHERE order_status = 4  -- 已完成
+        AND complete_time >= DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)
+        AND is_deleted = 0;
+
+    result_columns:
+      - completed_order_count
+      - total_amount
+
+    data_quality_tier: "high"
+    created_by: "PowerData Team"
+    created_at: "2025-01-01"
+    tags:
+      - "订单统计"
+      - "日期范围"
+      - "已完成订单"

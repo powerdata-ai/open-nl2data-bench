@@ -1,0 +1,253 @@
+# Order Domain - L2 Intermediate Questions
+# Multi-table joins and aggregations
+
+questions:
+  - question_id: "ORD-L2-001"
+    difficulty_level: "L2"
+    business_department: "订单管理"
+    question_text: "统计每个用户的订单数量和总消费金额"
+
+    business_scenario: "用户价值分析"
+    expected_insight: "识别高价值用户，制定个性化营销策略"
+
+    target_tables:
+      - "ord_order_main"
+    sql_patterns:
+      - "group_by"
+      - "aggregation"
+      - "multiple_metrics"
+
+    golden_sql: |
+      SELECT
+          user_id,
+          COUNT(*) as order_count,
+          SUM(actual_amount) as total_amount,
+          AVG(actual_amount) as avg_order_amount,
+          MAX(actual_amount) as max_order_amount,
+          MIN(order_time) as first_order_time,
+          MAX(order_time) as last_order_time
+      FROM ord_order_main
+      WHERE is_deleted = 0
+        AND order_status IN (1, 2, 3, 4)  -- 已支付及后续状态
+      GROUP BY user_id
+      HAVING order_count > 1  -- 至少有2笔订单的用户
+      ORDER BY total_amount DESC
+      LIMIT 100;
+
+    result_columns:
+      - user_id
+      - order_count
+      - total_amount
+      - avg_order_amount
+      - max_order_amount
+      - first_order_time
+      - last_order_time
+
+    data_quality_tier: "high"
+    created_by: "PowerData Team"
+    created_at: "2025-01-01"
+    tags:
+      - "用户分析"
+      - "聚合查询"
+      - "订单统计"
+
+  - question_id: "ORD-L2-002"
+    difficulty_level: "L2"
+    business_department: "订单管理"
+    question_text: "查询订单及其包含的商品明细信息"
+
+    business_scenario: "订单详情查询"
+    expected_insight: "完整展示订单内容，便于客服处理订单问题"
+
+    target_tables:
+      - "ord_order_main"
+      - "ord_order_item"
+    sql_patterns:
+      - "inner_join"
+      - "multi_table"
+
+    golden_sql: |
+      SELECT
+          om.order_id,
+          om.order_no,
+          om.user_id,
+          om.order_status,
+          om.actual_amount as order_total,
+          oi.item_id,
+          oi.product_name,
+          oi.sku_name,
+          oi.unit_price,
+          oi.quantity,
+          oi.actual_amount as item_total
+      FROM ord_order_main om
+      INNER JOIN ord_order_item oi ON om.order_id = oi.order_id
+      WHERE om.order_no = 'ORD202501010001'
+        AND om.is_deleted = 0
+      ORDER BY oi.item_id;
+
+    result_columns:
+      - order_id
+      - order_no
+      - user_id
+      - order_status
+      - order_total
+      - item_id
+      - product_name
+      - sku_name
+      - unit_price
+      - quantity
+      - item_total
+
+    data_quality_tier: "high"
+    created_by: "PowerData Team"
+    created_at: "2025-01-01"
+    tags:
+      - "订单详情"
+      - "JOIN查询"
+      - "商品明细"
+
+  - question_id: "ORD-L2-003"
+    difficulty_level: "L2"
+    business_department: "订单管理"
+    question_text: "统计每天的订单数量和订单金额趋势"
+
+    business_scenario: "订单趋势分析"
+    expected_insight: "了解订单量和GMV的日度变化趋势"
+
+    target_tables:
+      - "ord_order_main"
+    sql_patterns:
+      - "date_trunc"
+      - "group_by_date"
+      - "trend_analysis"
+
+    golden_sql: |
+      SELECT
+          DATE(order_time) as order_date,
+          COUNT(*) as order_count,
+          SUM(actual_amount) as total_amount,
+          AVG(actual_amount) as avg_order_amount,
+          COUNT(DISTINCT user_id) as unique_users
+      FROM ord_order_main
+      WHERE order_time >= DATE_SUB(CURRENT_DATE, INTERVAL 30 DAY)
+        AND is_deleted = 0
+        AND order_status IN (1, 2, 3, 4)  -- 已支付及后续状态
+      GROUP BY DATE(order_time)
+      ORDER BY order_date DESC;
+
+    result_columns:
+      - order_date
+      - order_count
+      - total_amount
+      - avg_order_amount
+      - unique_users
+
+    data_quality_tier: "high"
+    created_by: "PowerData Team"
+    created_at: "2025-01-01"
+    tags:
+      - "趋势分析"
+      - "日期聚合"
+      - "GMV统计"
+
+  - question_id: "ORD-L2-004"
+    difficulty_level: "L2"
+    business_department: "订单管理"
+    question_text: "查询使用了优惠券的订单及其优惠金额"
+
+    business_scenario: "营销效果分析"
+    expected_insight: "分析优惠券的使用情况和优惠力度"
+
+    target_tables:
+      - "ord_order_main"
+      - "ord_order_promotion"
+    sql_patterns:
+      - "inner_join"
+      - "promotion_filter"
+
+    golden_sql: |
+      SELECT
+          om.order_id,
+          om.order_no,
+          om.user_id,
+          om.total_amount,
+          om.discount_amount,
+          om.actual_amount,
+          op.promotion_type,
+          op.promotion_name,
+          op.discount_amount as promotion_discount
+      FROM ord_order_main om
+      INNER JOIN ord_order_promotion op ON om.order_id = op.order_id
+      WHERE op.promotion_type = 4  -- 优惠券
+        AND om.order_time >= DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)
+        AND om.is_deleted = 0
+      ORDER BY om.order_time DESC;
+
+    result_columns:
+      - order_id
+      - order_no
+      - user_id
+      - total_amount
+      - discount_amount
+      - actual_amount
+      - promotion_type
+      - promotion_name
+      - promotion_discount
+
+    data_quality_tier: "high"
+    created_by: "PowerData Team"
+    created_at: "2025-01-01"
+    tags:
+      - "营销分析"
+      - "优惠券"
+      - "JOIN查询"
+
+  - question_id: "ORD-L2-005"
+    difficulty_level: "L2"
+    business_department: "订单管理"
+    question_text: "统计每个订单状态的订单数量分布"
+
+    business_scenario: "订单状态监控"
+    expected_insight: "了解订单在不同状态的分布，识别潜在问题"
+
+    target_tables:
+      - "ord_order_main"
+    sql_patterns:
+      - "group_by_status"
+      - "case_when"
+
+    golden_sql: |
+      SELECT
+          CASE order_status
+              WHEN 0 THEN '待支付'
+              WHEN 1 THEN '已支付'
+              WHEN 2 THEN '待发货'
+              WHEN 3 THEN '已发货'
+              WHEN 4 THEN '已完成'
+              WHEN 5 THEN '已取消'
+              WHEN 6 THEN '已关闭'
+              ELSE '未知状态'
+          END as status_name,
+          order_status,
+          COUNT(*) as order_count,
+          SUM(actual_amount) as total_amount,
+          ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) as percentage
+      FROM ord_order_main
+      WHERE is_deleted = 0
+      GROUP BY order_status
+      ORDER BY order_status;
+
+    result_columns:
+      - status_name
+      - order_status
+      - order_count
+      - total_amount
+      - percentage
+
+    data_quality_tier: "high"
+    created_by: "PowerData Team"
+    created_at: "2025-01-01"
+    tags:
+      - "状态分析"
+      - "CASE WHEN"
+      - "分布统计"

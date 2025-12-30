@@ -50,6 +50,313 @@ CREATE TABLE afs_knowledge (
 	CONSTRAINT pk_afs_knowledge PRIMARY KEY (knowledge_id)
 )COMMENT='售后知识库表';
 
+CREATE TABLE ana_conversion (
+	id BIGINT NOT NULL COMMENT '主键ID' AUTO_INCREMENT, 
+	stat_date DATE NOT NULL COMMENT '统计日期', 
+	funnel_type SMALLINT NOT NULL COMMENT '漏斗类型：1全站/2类目/3活动', 
+	target_id BIGINT COMMENT '目标ID', 
+	visit_uv INTEGER NOT NULL COMMENT '访问UV', 
+	product_view_uv INTEGER NOT NULL COMMENT '商品浏览UV', 
+	add_cart_uv INTEGER NOT NULL COMMENT '加购UV', 
+	order_uv INTEGER NOT NULL COMMENT '下单UV', 
+	payment_uv INTEGER NOT NULL COMMENT '支付UV', 
+	view_rate NUMERIC(5, 4) NOT NULL COMMENT '浏览率', 
+	add_cart_rate NUMERIC(5, 4) NOT NULL COMMENT '加购率', 
+	order_rate NUMERIC(5, 4) NOT NULL COMMENT '下单率', 
+	payment_rate NUMERIC(5, 4) NOT NULL COMMENT '支付率', 
+	CONSTRAINT pk_ana_conversion PRIMARY KEY (id)
+)COMMENT='转化漏斗分析表';
+
+CREATE TABLE ana_product_view (
+	id BIGINT NOT NULL COMMENT '主键ID' AUTO_INCREMENT, 
+	product_id BIGINT NOT NULL COMMENT '商品ID', 
+	stat_date DATE NOT NULL COMMENT '统计日期', 
+	view_count INTEGER NOT NULL COMMENT '浏览量', 
+	unique_visitor INTEGER NOT NULL COMMENT '独立访客数', 
+	avg_duration INTEGER NOT NULL COMMENT '平均停留时长(秒)', 
+	add_cart_count INTEGER NOT NULL COMMENT '加购数', 
+	order_count INTEGER NOT NULL COMMENT '下单数', 
+	conversion_rate NUMERIC(5, 4) NOT NULL COMMENT '转化率', 
+	CONSTRAINT pk_ana_product_view PRIMARY KEY (id)
+)COMMENT='商品浏览统计表';
+
+CREATE TABLE ana_sales_daily (
+	id BIGINT NOT NULL COMMENT '主键ID' AUTO_INCREMENT, 
+	stat_date DATE NOT NULL COMMENT '统计日期', 
+	category_id BIGINT COMMENT '类目ID，null表示全平台', 
+	order_count INTEGER NOT NULL COMMENT '订单数', 
+	order_amount NUMERIC(12, 2) NOT NULL COMMENT '订单金额', 
+	paid_order_count INTEGER NOT NULL COMMENT '支付订单数', 
+	paid_amount NUMERIC(12, 2) NOT NULL COMMENT '支付金额', 
+	new_user_count INTEGER NOT NULL COMMENT '新用户数', 
+	active_user_count INTEGER NOT NULL COMMENT '活跃用户数', 
+	refund_order_count INTEGER NOT NULL COMMENT '退款订单数', 
+	refund_amount NUMERIC(12, 2) NOT NULL COMMENT '退款金额', 
+	CONSTRAINT pk_ana_sales_daily PRIMARY KEY (id)
+)COMMENT='日销售统计表';
+
+CREATE TABLE ana_user_behavior (
+	behavior_id BIGINT NOT NULL COMMENT '行为ID' AUTO_INCREMENT, 
+	user_id BIGINT NOT NULL COMMENT '用户ID', 
+	behavior_type SMALLINT NOT NULL COMMENT '行为类型：1浏览/2搜索/3加购/4下单/5支付', 
+	target_type SMALLINT NOT NULL COMMENT '目标类型：1商品/2类目/3店铺', 
+	target_id BIGINT NOT NULL COMMENT '目标ID', 
+	session_id VARCHAR(64) COMMENT '会话ID', 
+	device_type SMALLINT COMMENT '设备类型：1PC/2iOS/3Android/4小程序', 
+	behavior_time DATETIME NOT NULL COMMENT '行为时间', 
+	CONSTRAINT pk_ana_user_behavior PRIMARY KEY (behavior_id)
+)COMMENT='用户行为分析表';
+
+CREATE TABLE cms_article (
+	article_id BIGINT NOT NULL COMMENT '文章ID' AUTO_INCREMENT, 
+	category_id BIGINT NOT NULL COMMENT '分类ID', 
+	title VARCHAR(200) NOT NULL COMMENT '文章标题', 
+	subtitle VARCHAR(500) COMMENT '副标题', 
+	cover_image VARCHAR(255) COMMENT '封面图', 
+	content TEXT NOT NULL COMMENT '文章内容', 
+	summary VARCHAR(500) COMMENT '摘要', 
+	author_id BIGINT NOT NULL COMMENT '作者ID', 
+	view_count INTEGER NOT NULL COMMENT '浏览量', 
+	like_count INTEGER NOT NULL COMMENT '点赞数', 
+	status SMALLINT NOT NULL COMMENT '状态：0草稿/1已发布/2已下线', 
+	publish_time DATETIME COMMENT '发布时间', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	is_deleted SMALLINT NOT NULL COMMENT '删除标记：0未删除/1已删除', 
+	CONSTRAINT pk_cms_article PRIMARY KEY (article_id)
+)COMMENT='CMS文章表';
+
+CREATE TABLE cms_banner (
+	banner_id BIGINT NOT NULL COMMENT '轮播图ID' AUTO_INCREMENT, 
+	banner_name VARCHAR(100) NOT NULL COMMENT '名称', 
+	position SMALLINT NOT NULL COMMENT '位置：1首页/2分类页/3详情页', 
+	image_url VARCHAR(255) NOT NULL COMMENT '图片URL', 
+	link_url VARCHAR(255) COMMENT '跳转链接', 
+	link_type SMALLINT COMMENT '链接类型：1商品/2活动/3文章/4外链', 
+	sort_order INTEGER NOT NULL COMMENT '排序', 
+	start_time DATETIME NOT NULL COMMENT '开始时间', 
+	end_time DATETIME NOT NULL COMMENT '结束时间', 
+	status SMALLINT NOT NULL COMMENT '状态：0禁用/1启用', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	is_deleted SMALLINT NOT NULL COMMENT '删除标记：0未删除/1已删除', 
+	CONSTRAINT pk_cms_banner PRIMARY KEY (banner_id)
+)COMMENT='轮播图表';
+
+CREATE TABLE cms_navigation (
+	nav_id BIGINT NOT NULL COMMENT '导航ID' AUTO_INCREMENT, 
+	parent_id BIGINT NOT NULL COMMENT '父导航ID', 
+	nav_name VARCHAR(100) NOT NULL COMMENT '导航名称', 
+	nav_url VARCHAR(255) COMMENT '导航链接', 
+	nav_icon VARCHAR(255) COMMENT '图标', 
+	position SMALLINT NOT NULL COMMENT '位置：1顶部导航/2底部导航/3侧边导航', 
+	sort_order INTEGER NOT NULL COMMENT '排序', 
+	is_external SMALLINT NOT NULL COMMENT '是否外部链接：0否/1是', 
+	status SMALLINT NOT NULL COMMENT '状态：0禁用/1启用', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_cms_navigation PRIMARY KEY (nav_id)
+)COMMENT='导航菜单表';
+
+CREATE TABLE cms_topic (
+	topic_id BIGINT NOT NULL COMMENT '专题ID' AUTO_INCREMENT, 
+	topic_name VARCHAR(200) NOT NULL COMMENT '专题名称', 
+	cover_image VARCHAR(255) NOT NULL COMMENT '封面图', 
+	description TEXT COMMENT '专题描述', 
+	content TEXT NOT NULL COMMENT '专题内容HTML', 
+	product_ids TEXT COMMENT '关联商品ID列表JSON', 
+	view_count INTEGER NOT NULL COMMENT '浏览量', 
+	start_time DATETIME NOT NULL COMMENT '开始时间', 
+	end_time DATETIME NOT NULL COMMENT '结束时间', 
+	status SMALLINT NOT NULL COMMENT '状态：0禁用/1启用', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	is_deleted SMALLINT NOT NULL COMMENT '删除标记：0未删除/1已删除', 
+	CONSTRAINT pk_cms_topic PRIMARY KEY (topic_id)
+)COMMENT='专题活动表';
+
+CREATE TABLE cus_conversation (
+	conversation_id BIGINT NOT NULL COMMENT '会话ID' AUTO_INCREMENT, 
+	user_id BIGINT NOT NULL COMMENT '用户ID', 
+	agent_id BIGINT COMMENT '客服ID', 
+	channel SMALLINT NOT NULL COMMENT '渠道：1在线客服/2电话/3邮件/4微信', 
+	start_time DATETIME NOT NULL COMMENT '开始时间', 
+	end_time DATETIME COMMENT '结束时间', 
+	message_count INTEGER NOT NULL COMMENT '消息数量', 
+	status SMALLINT NOT NULL COMMENT '状态：0进行中/1已结束', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_cus_conversation PRIMARY KEY (conversation_id)
+)COMMENT='客服会话表';
+
+CREATE TABLE cus_message (
+	message_id BIGINT NOT NULL COMMENT '消息ID' AUTO_INCREMENT, 
+	conversation_id BIGINT NOT NULL COMMENT '会话ID', 
+	sender_id BIGINT NOT NULL COMMENT '发送者ID', 
+	sender_type SMALLINT NOT NULL COMMENT '发送者类型：1用户/2客服/3系统', 
+	message_type SMALLINT NOT NULL COMMENT '消息类型：1文本/2图片/3语音/4文件', 
+	content TEXT NOT NULL COMMENT '消息内容', 
+	send_time DATETIME NOT NULL COMMENT '发送时间', 
+	CONSTRAINT pk_cus_message PRIMARY KEY (message_id)
+)COMMENT='客服消息表';
+
+CREATE TABLE cus_satisfaction (
+	satisfaction_id BIGINT NOT NULL COMMENT '评价ID' AUTO_INCREMENT, 
+	ticket_id BIGINT COMMENT '工单ID', 
+	conversation_id BIGINT COMMENT '会话ID', 
+	user_id BIGINT NOT NULL COMMENT '用户ID', 
+	agent_id BIGINT NOT NULL COMMENT '客服ID', 
+	rating SMALLINT NOT NULL COMMENT '评分：1-5星', 
+	tags VARCHAR(500) COMMENT '评价标签JSON', 
+	comment TEXT COMMENT '评价内容', 
+	evaluate_time DATETIME NOT NULL COMMENT '评价时间', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_cus_satisfaction PRIMARY KEY (satisfaction_id)
+)COMMENT='客服满意度评价表';
+
+CREATE TABLE cus_ticket (
+	ticket_id BIGINT NOT NULL COMMENT '工单ID' AUTO_INCREMENT, 
+	ticket_no VARCHAR(32) NOT NULL COMMENT '工单号', 
+	user_id BIGINT NOT NULL COMMENT '用户ID', 
+	order_id BIGINT COMMENT '关联订单ID', 
+	category SMALLINT NOT NULL COMMENT '工单类别：1订单问题/2商品咨询/3投诉建议/4其他', 
+	title VARCHAR(200) NOT NULL COMMENT '工单标题', 
+	description TEXT NOT NULL COMMENT '问题描述', 
+	priority SMALLINT NOT NULL COMMENT '优先级：1低/2中/3高/4紧急', 
+	status SMALLINT NOT NULL COMMENT '状态：0待处理/1处理中/2待回复/3已解决/4已关闭', 
+	assignee_id BIGINT COMMENT '处理人ID', 
+	assign_time DATETIME COMMENT '分配时间', 
+	resolve_time DATETIME COMMENT '解决时间', 
+	close_time DATETIME COMMENT '关闭时间', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_cus_ticket PRIMARY KEY (ticket_id), 
+	CONSTRAINT uq_cus_ticket_ticket_no UNIQUE (ticket_no)
+)COMMENT='客服工单表';
+
+CREATE TABLE inv_adjustment (
+	adjustment_id BIGINT NOT NULL COMMENT '调整ID' AUTO_INCREMENT, 
+	adjustment_no VARCHAR(32) NOT NULL COMMENT '调整单号', 
+	sku_id BIGINT NOT NULL COMMENT 'SKU ID', 
+	warehouse_id BIGINT NOT NULL COMMENT '仓库ID', 
+	adjustment_type SMALLINT NOT NULL COMMENT '调整类型：1盘盈/2盘亏/3报损/4其他', 
+	adjustment_quantity INTEGER NOT NULL COMMENT '调整数量', 
+	before_quantity INTEGER NOT NULL COMMENT '调整前数量', 
+	after_quantity INTEGER NOT NULL COMMENT '调整后数量', 
+	reason VARCHAR(500) COMMENT '调整原因', 
+	operator_id BIGINT NOT NULL COMMENT '操作人ID', 
+	auditor_id BIGINT COMMENT '审核人ID', 
+	adjustment_time DATETIME NOT NULL COMMENT '调整时间', 
+	audit_time DATETIME COMMENT '审核时间', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_inv_adjustment PRIMARY KEY (adjustment_id), 
+	CONSTRAINT uq_inv_adjustment_adjustment_no UNIQUE (adjustment_no)
+)COMMENT='库存调整表';
+
+CREATE TABLE inv_allocation (
+	allocation_id BIGINT NOT NULL COMMENT '分配ID' AUTO_INCREMENT, 
+	order_id BIGINT NOT NULL COMMENT '订单ID', 
+	order_item_id BIGINT NOT NULL COMMENT '订单明细ID', 
+	sku_id BIGINT NOT NULL COMMENT 'SKU ID', 
+	warehouse_id BIGINT NOT NULL COMMENT '仓库ID', 
+	allocated_quantity INTEGER NOT NULL COMMENT '分配数量', 
+	picked_quantity INTEGER NOT NULL COMMENT '已拣货数量', 
+	shipped_quantity INTEGER NOT NULL COMMENT '已发货数量', 
+	status SMALLINT NOT NULL COMMENT '状态：0待拣货/1拣货中/2已拣货/3已发货/4已取消', 
+	allocation_time DATETIME NOT NULL COMMENT '分配时间', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_inv_allocation PRIMARY KEY (allocation_id)
+)COMMENT='库存分配表';
+
+CREATE TABLE inv_reservation (
+	reservation_id BIGINT NOT NULL COMMENT '预占ID' AUTO_INCREMENT, 
+	order_id BIGINT NOT NULL COMMENT '订单ID', 
+	sku_id BIGINT NOT NULL COMMENT 'SKU ID', 
+	warehouse_id BIGINT NOT NULL COMMENT '仓库ID', 
+	reserved_quantity INTEGER NOT NULL COMMENT '预占数量', 
+	status SMALLINT NOT NULL COMMENT '状态：0有效/1已取消/2已转为分配/3已过期', 
+	reservation_time DATETIME NOT NULL COMMENT '预占时间', 
+	expire_time DATETIME NOT NULL COMMENT '过期时间', 
+	release_time DATETIME COMMENT '释放时间', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_inv_reservation PRIMARY KEY (reservation_id)
+)COMMENT='库存预占表';
+
+CREATE TABLE inv_safety_stock (
+	id BIGINT NOT NULL COMMENT '主键ID' AUTO_INCREMENT, 
+	sku_id BIGINT NOT NULL COMMENT 'SKU ID', 
+	warehouse_id BIGINT NOT NULL COMMENT '仓库ID', 
+	safety_stock INTEGER NOT NULL COMMENT '安全库存', 
+	reorder_point INTEGER NOT NULL COMMENT '再订货点', 
+	max_stock INTEGER NOT NULL COMMENT '最大库存', 
+	lead_time_days INTEGER NOT NULL COMMENT '补货周期(天)', 
+	auto_purchase SMALLINT NOT NULL COMMENT '是否自动采购：0否/1是', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_inv_safety_stock PRIMARY KEY (id)
+)COMMENT='安全库存配置表';
+
+CREATE TABLE inv_stock (
+	stock_id BIGINT NOT NULL COMMENT '库存ID' AUTO_INCREMENT, 
+	sku_id BIGINT NOT NULL COMMENT 'SKU ID', 
+	warehouse_id BIGINT NOT NULL COMMENT '仓库ID', 
+	total_quantity INTEGER NOT NULL COMMENT '总库存', 
+	available_quantity INTEGER NOT NULL COMMENT '可用库存', 
+	locked_quantity INTEGER NOT NULL COMMENT '锁定库存', 
+	allocated_quantity INTEGER NOT NULL COMMENT '已分配库存', 
+	defective_quantity INTEGER NOT NULL COMMENT '残次品库存', 
+	safety_stock INTEGER NOT NULL COMMENT '安全库存', 
+	reorder_point INTEGER NOT NULL COMMENT '再订货点', 
+	max_stock INTEGER NOT NULL COMMENT '最大库存', 
+	last_in_time DATETIME COMMENT '最后入库时间', 
+	last_out_time DATETIME COMMENT '最后出库时间', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_inv_stock PRIMARY KEY (stock_id)
+)COMMENT='库存主表';
+
+CREATE TABLE inv_stock_log (
+	log_id BIGINT NOT NULL COMMENT '日志ID' AUTO_INCREMENT, 
+	stock_id BIGINT NOT NULL COMMENT '库存ID', 
+	sku_id BIGINT NOT NULL COMMENT 'SKU ID', 
+	warehouse_id BIGINT NOT NULL COMMENT '仓库ID', 
+	change_type SMALLINT NOT NULL COMMENT '变动类型：1入库/2出库/3调拨/4盘点/5锁定/6解锁/7报损', 
+	change_quantity INTEGER NOT NULL COMMENT '变动数量', 
+	before_quantity INTEGER NOT NULL COMMENT '变动前数量', 
+	after_quantity INTEGER NOT NULL COMMENT '变动后数量', 
+	business_no VARCHAR(64) COMMENT '业务单号', 
+	business_type SMALLINT COMMENT '业务类型：1采购/2销售/3退货/4调拨/5盘点', 
+	remark VARCHAR(500) COMMENT '备注', 
+	operator_id BIGINT COMMENT '操作人ID', 
+	log_time DATETIME NOT NULL COMMENT '变动时间', 
+	CONSTRAINT pk_inv_stock_log PRIMARY KEY (log_id)
+)COMMENT='库存变动日志表';
+
+CREATE TABLE inv_transfer (
+	transfer_id BIGINT NOT NULL COMMENT '调拨ID' AUTO_INCREMENT, 
+	transfer_no VARCHAR(32) NOT NULL COMMENT '调拨单号', 
+	sku_id BIGINT NOT NULL COMMENT 'SKU ID', 
+	from_warehouse_id BIGINT NOT NULL COMMENT '调出仓库ID', 
+	to_warehouse_id BIGINT NOT NULL COMMENT '调入仓库ID', 
+	transfer_quantity INTEGER NOT NULL COMMENT '调拨数量', 
+	actual_quantity INTEGER NOT NULL COMMENT '实际到货数量', 
+	status SMALLINT NOT NULL COMMENT '状态：0待审核/1已审核/2已出库/3在途/4已到货/5已取消', 
+	applicant_id BIGINT NOT NULL COMMENT '申请人ID', 
+	auditor_id BIGINT COMMENT '审核人ID', 
+	apply_time DATETIME NOT NULL COMMENT '申请时间', 
+	audit_time DATETIME COMMENT '审核时间', 
+	out_time DATETIME COMMENT '出库时间', 
+	in_time DATETIME COMMENT '入库时间', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_inv_transfer PRIMARY KEY (transfer_id), 
+	CONSTRAINT uq_inv_transfer_transfer_no UNIQUE (transfer_no)
+)COMMENT='库存调拨表';
+
 CREATE TABLE log_logistics_company (
 	company_id BIGINT NOT NULL COMMENT '物流公司ID' AUTO_INCREMENT, 
 	company_code VARCHAR(50) NOT NULL COMMENT '物流公司编码', 
@@ -107,6 +414,288 @@ CREATE TABLE log_warehouse (
 	CONSTRAINT pk_log_warehouse PRIMARY KEY (warehouse_id), 
 	CONSTRAINT uq_log_warehouse_warehouse_code UNIQUE (warehouse_code)
 )COMMENT='仓库表';
+
+CREATE TABLE mch_account (
+	account_id BIGINT NOT NULL COMMENT '账户ID' AUTO_INCREMENT, 
+	merchant_id BIGINT NOT NULL COMMENT '商家ID', 
+	balance NUMERIC(12, 2) NOT NULL COMMENT '账户余额', 
+	frozen_amount NUMERIC(12, 2) NOT NULL COMMENT '冻结金额', 
+	total_income NUMERIC(12, 2) NOT NULL COMMENT '累计收入', 
+	total_withdraw NUMERIC(12, 2) NOT NULL COMMENT '累计提现', 
+	bank_name VARCHAR(100) COMMENT '开户银行', 
+	bank_account VARCHAR(50) COMMENT '银行账号', 
+	account_name VARCHAR(100) COMMENT '账户名称', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_mch_account PRIMARY KEY (account_id), 
+	CONSTRAINT uq_mch_account_merchant_id UNIQUE (merchant_id)
+)COMMENT='商家账户表';
+
+CREATE TABLE mch_category (
+	category_id BIGINT NOT NULL COMMENT '类目ID' AUTO_INCREMENT, 
+	parent_id BIGINT NOT NULL COMMENT '父类目ID', 
+	category_name VARCHAR(100) NOT NULL COMMENT '类目名称', 
+	category_level SMALLINT NOT NULL COMMENT '类目层级', 
+	commission_rate NUMERIC(5, 4) NOT NULL COMMENT '默认佣金比例', 
+	sort_order INTEGER NOT NULL COMMENT '排序', 
+	status SMALLINT NOT NULL COMMENT '状态：0禁用/1启用', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_mch_category PRIMARY KEY (category_id)
+)COMMENT='商家经营类目表';
+
+CREATE TABLE mch_merchant (
+	merchant_id BIGINT NOT NULL COMMENT '商家ID' AUTO_INCREMENT, 
+	merchant_code VARCHAR(32) NOT NULL COMMENT '商家编码', 
+	merchant_name VARCHAR(200) NOT NULL COMMENT '商家名称', 
+	merchant_type SMALLINT NOT NULL COMMENT '商家类型：1自营/2第三方/3品牌直营', 
+	category_id BIGINT NOT NULL COMMENT '经营类目ID', 
+	legal_person VARCHAR(50) NOT NULL COMMENT '法人代表', 
+	business_license VARCHAR(50) NOT NULL COMMENT '营业执照号', 
+	tax_number VARCHAR(50) NOT NULL COMMENT '税号', 
+	contact_person VARCHAR(50) NOT NULL COMMENT '联系人', 
+	contact_phone VARCHAR(20) NOT NULL COMMENT '联系电话', 
+	contact_email VARCHAR(100) COMMENT '联系邮箱', 
+	settle_type SMALLINT NOT NULL COMMENT '结算类型：1按天/2按周/3按月', 
+	commission_rate NUMERIC(5, 4) NOT NULL COMMENT '佣金比例', 
+	status SMALLINT NOT NULL COMMENT '状态：0待审核/1正常/2冻结/3关闭', 
+	cooperation_start_date DATETIME COMMENT '合作开始日期', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	is_deleted SMALLINT NOT NULL COMMENT '删除标记：0未删除/1已删除', 
+	CONSTRAINT pk_mch_merchant PRIMARY KEY (merchant_id), 
+	CONSTRAINT uq_mch_merchant_merchant_code UNIQUE (merchant_code)
+)COMMENT='商家表';
+
+CREATE TABLE mch_settlement (
+	settlement_id BIGINT NOT NULL COMMENT '结算ID' AUTO_INCREMENT, 
+	settlement_no VARCHAR(32) NOT NULL COMMENT '结算单号', 
+	merchant_id BIGINT NOT NULL COMMENT '商家ID', 
+	settlement_date DATE NOT NULL COMMENT '结算日期', 
+	order_count INTEGER NOT NULL COMMENT '订单数量', 
+	order_amount NUMERIC(12, 2) NOT NULL COMMENT '订单金额', 
+	refund_amount NUMERIC(12, 2) NOT NULL COMMENT '退款金额', 
+	commission_amount NUMERIC(12, 2) NOT NULL COMMENT '佣金金额', 
+	settlement_amount NUMERIC(12, 2) NOT NULL COMMENT '结算金额', 
+	actual_amount NUMERIC(12, 2) NOT NULL COMMENT '实付金额', 
+	status SMALLINT NOT NULL COMMENT '状态：0待确认/1已确认/2已结算/3已取消', 
+	confirm_time DATETIME COMMENT '确认时间', 
+	settle_time DATETIME COMMENT '结算时间', 
+	remark TEXT COMMENT '备注', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_mch_settlement PRIMARY KEY (settlement_id), 
+	CONSTRAINT uq_mch_settlement_settlement_no UNIQUE (settlement_no)
+)COMMENT='商家结算表';
+
+CREATE TABLE mch_store (
+	store_id BIGINT NOT NULL COMMENT '门店ID' AUTO_INCREMENT, 
+	store_code VARCHAR(32) NOT NULL COMMENT '门店编码', 
+	store_name VARCHAR(200) NOT NULL COMMENT '门店名称', 
+	merchant_id BIGINT NOT NULL COMMENT '所属商家ID', 
+	province VARCHAR(50) NOT NULL COMMENT '省份', 
+	city VARCHAR(50) NOT NULL COMMENT '城市', 
+	district VARCHAR(50) NOT NULL COMMENT '区县', 
+	address VARCHAR(500) NOT NULL COMMENT '详细地址', 
+	longitude NUMERIC(10, 6) COMMENT '经度', 
+	latitude NUMERIC(10, 6) COMMENT '纬度', 
+	contact_person VARCHAR(50) NOT NULL COMMENT '联系人', 
+	contact_phone VARCHAR(20) NOT NULL COMMENT '联系电话', 
+	business_hours VARCHAR(100) COMMENT '营业时间', 
+	status SMALLINT NOT NULL COMMENT '状态：0关闭/1营业/2装修', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	is_deleted SMALLINT NOT NULL COMMENT '删除标记：0未删除/1已删除', 
+	CONSTRAINT pk_mch_store PRIMARY KEY (store_id), 
+	CONSTRAINT uq_mch_store_store_code UNIQUE (store_code)
+)COMMENT='门店表';
+
+CREATE TABLE mch_store_inventory (
+	inventory_id BIGINT NOT NULL COMMENT '库存ID' AUTO_INCREMENT, 
+	store_id BIGINT NOT NULL COMMENT '门店ID', 
+	sku_id BIGINT NOT NULL COMMENT 'SKU ID', 
+	total_quantity INTEGER NOT NULL COMMENT '总库存', 
+	available_quantity INTEGER NOT NULL COMMENT '可用库存', 
+	locked_quantity INTEGER NOT NULL COMMENT '锁定库存', 
+	min_stock INTEGER NOT NULL COMMENT '最小库存', 
+	max_stock INTEGER NOT NULL COMMENT '最大库存', 
+	last_in_time DATETIME COMMENT '最后入库时间', 
+	last_out_time DATETIME COMMENT '最后出库时间', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_mch_store_inventory PRIMARY KEY (inventory_id)
+)COMMENT='门店库存表';
+
+CREATE TABLE mch_store_order (
+	store_order_id BIGINT NOT NULL COMMENT '门店订单ID' AUTO_INCREMENT, 
+	order_no VARCHAR(32) NOT NULL COMMENT '订单号', 
+	store_id BIGINT NOT NULL COMMENT '门店ID', 
+	staff_id BIGINT NOT NULL COMMENT '服务员工ID', 
+	user_id BIGINT COMMENT '用户ID(会员)', 
+	member_no VARCHAR(32) COMMENT '会员卡号', 
+	total_amount NUMERIC(12, 2) NOT NULL COMMENT '订单总额', 
+	discount_amount NUMERIC(12, 2) NOT NULL COMMENT '优惠金额', 
+	actual_amount NUMERIC(12, 2) NOT NULL COMMENT '实付金额', 
+	payment_method SMALLINT NOT NULL COMMENT '支付方式：1现金/2支付宝/3微信/4刷卡/5会员卡', 
+	status SMALLINT NOT NULL COMMENT '状态：0待支付/1已支付/2已取消/3已退款', 
+	order_time DATETIME NOT NULL COMMENT '下单时间', 
+	pay_time DATETIME COMMENT '支付时间', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_mch_store_order PRIMARY KEY (store_order_id), 
+	CONSTRAINT uq_mch_store_order_order_no UNIQUE (order_no)
+)COMMENT='门店订单表';
+
+CREATE TABLE mch_store_staff (
+	staff_id BIGINT NOT NULL COMMENT '员工ID' AUTO_INCREMENT, 
+	store_id BIGINT NOT NULL COMMENT '门店ID', 
+	staff_code VARCHAR(32) NOT NULL COMMENT '员工编码', 
+	staff_name VARCHAR(50) NOT NULL COMMENT '姓名', 
+	mobile VARCHAR(20) NOT NULL COMMENT '手机号', 
+	id_card VARCHAR(20) COMMENT '身份证号', 
+	position VARCHAR(50) NOT NULL COMMENT '职位', 
+	role_type SMALLINT NOT NULL COMMENT '角色类型：1店长/2收银员/3导购/4仓管', 
+	entry_date DATETIME NOT NULL COMMENT '入职日期', 
+	leave_date DATETIME COMMENT '离职日期', 
+	status SMALLINT NOT NULL COMMENT '状态：0离职/1在职', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	is_deleted SMALLINT NOT NULL COMMENT '删除标记：0未删除/1已删除', 
+	CONSTRAINT pk_mch_store_staff PRIMARY KEY (staff_id), 
+	CONSTRAINT uq_mch_store_staff_staff_code UNIQUE (staff_code)
+)COMMENT='门店员工表';
+
+CREATE TABLE mkt_campaign (
+	campaign_id BIGINT NOT NULL COMMENT '活动ID' AUTO_INCREMENT, 
+	campaign_name VARCHAR(200) NOT NULL COMMENT '活动名称', 
+	campaign_type SMALLINT NOT NULL COMMENT '活动类型：1满减/2满折/3秒杀/4拼团/5优惠券/6其他', 
+	start_time DATETIME NOT NULL COMMENT '开始时间', 
+	end_time DATETIME NOT NULL COMMENT '结束时间', 
+	apply_scope SMALLINT NOT NULL COMMENT '适用范围：1全平台/2指定类目/3指定商品/4指定用户', 
+	target_rule TEXT COMMENT '目标规则JSON', 
+	budget_amount NUMERIC(12, 2) COMMENT '预算金额', 
+	used_amount NUMERIC(12, 2) NOT NULL COMMENT '已用金额', 
+	status SMALLINT NOT NULL COMMENT '状态：0未开始/1进行中/2已结束/3已暂停/4已取消', 
+	creator_id BIGINT NOT NULL COMMENT '创建人ID', 
+	description TEXT COMMENT '活动描述', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	is_deleted SMALLINT NOT NULL COMMENT '删除标记：0未删除/1已删除', 
+	CONSTRAINT pk_mkt_campaign PRIMARY KEY (campaign_id)
+)COMMENT='营销活动表';
+
+CREATE TABLE mkt_coupon (
+	coupon_id BIGINT NOT NULL COMMENT '优惠券ID' AUTO_INCREMENT, 
+	batch_id BIGINT NOT NULL COMMENT '批次ID', 
+	coupon_code VARCHAR(32) NOT NULL COMMENT '优惠券码', 
+	status SMALLINT NOT NULL COMMENT '状态：0未发放/1已发放/2已使用/3已过期/4已作废', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_mkt_coupon PRIMARY KEY (coupon_id), 
+	CONSTRAINT uq_mkt_coupon_coupon_code UNIQUE (coupon_code)
+)COMMENT='优惠券表';
+
+CREATE TABLE mkt_coupon_batch (
+	batch_id BIGINT NOT NULL COMMENT '批次ID' AUTO_INCREMENT, 
+	batch_no VARCHAR(32) NOT NULL COMMENT '批次编号', 
+	batch_name VARCHAR(200) NOT NULL COMMENT '批次名称', 
+	coupon_type SMALLINT NOT NULL COMMENT '优惠券类型：1满减券/2折扣券/3免邮券', 
+	discount_type SMALLINT NOT NULL COMMENT '优惠方式：1固定金额/2折扣百分比', 
+	discount_value NUMERIC(12, 2) NOT NULL COMMENT '优惠额度', 
+	min_order_amount NUMERIC(12, 2) NOT NULL COMMENT '最低订单金额', 
+	max_discount_amount NUMERIC(12, 2) COMMENT '最高优惠金额', 
+	total_quantity INTEGER NOT NULL COMMENT '发行总量', 
+	received_quantity INTEGER NOT NULL COMMENT '已领取数量', 
+	used_quantity INTEGER NOT NULL COMMENT '已使用数量', 
+	receive_start_time DATETIME NOT NULL COMMENT '领取开始时间', 
+	receive_end_time DATETIME NOT NULL COMMENT '领取结束时间', 
+	valid_days INTEGER NOT NULL COMMENT '有效天数', 
+	receive_limit INTEGER NOT NULL COMMENT '每人限领数量', 
+	status SMALLINT NOT NULL COMMENT '状态：0禁用/1启用', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_mkt_coupon_batch PRIMARY KEY (batch_id), 
+	CONSTRAINT uq_mkt_coupon_batch_batch_no UNIQUE (batch_no)
+)COMMENT='优惠券批次表';
+
+CREATE TABLE mkt_discount_rule (
+	rule_id BIGINT NOT NULL COMMENT '规则ID' AUTO_INCREMENT, 
+	rule_name VARCHAR(200) NOT NULL COMMENT '规则名称', 
+	rule_type SMALLINT NOT NULL COMMENT '规则类型：1会员折扣/2批发折扣/3时段折扣', 
+	target_type SMALLINT NOT NULL COMMENT '目标类型：1全平台/2类目/3商品/4用户等级', 
+	target_ids TEXT COMMENT '目标ID列表JSON', 
+	discount_config TEXT NOT NULL COMMENT '折扣配置JSON', 
+	priority INTEGER NOT NULL COMMENT '优先级', 
+	status SMALLINT NOT NULL COMMENT '状态：0禁用/1启用', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_mkt_discount_rule PRIMARY KEY (rule_id)
+)COMMENT='折扣规则表';
+
+CREATE TABLE mkt_group_buy (
+	group_id BIGINT NOT NULL COMMENT '拼团ID' AUTO_INCREMENT, 
+	activity_name VARCHAR(200) NOT NULL COMMENT '活动名称', 
+	sku_id BIGINT NOT NULL COMMENT 'SKU ID', 
+	original_price NUMERIC(12, 2) NOT NULL COMMENT '原价', 
+	group_price NUMERIC(12, 2) NOT NULL COMMENT '拼团价', 
+	required_people INTEGER NOT NULL COMMENT '成团人数', 
+	valid_hours INTEGER NOT NULL COMMENT '有效时长(小时)', 
+	start_time DATETIME NOT NULL COMMENT '开始时间', 
+	end_time DATETIME NOT NULL COMMENT '结束时间', 
+	status SMALLINT NOT NULL COMMENT '状态：0禁用/1启用', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_mkt_group_buy PRIMARY KEY (group_id)
+)COMMENT='拼团活动表';
+
+CREATE TABLE mkt_promotion (
+	promotion_id BIGINT NOT NULL COMMENT '促销ID' AUTO_INCREMENT, 
+	promotion_name VARCHAR(200) NOT NULL COMMENT '促销名称', 
+	promotion_type SMALLINT NOT NULL COMMENT '促销类型：1满减/2满折/3满赠/4第N件折扣', 
+	rule_type SMALLINT NOT NULL COMMENT '规则类型：1阶梯/2固定', 
+	rule_config TEXT NOT NULL COMMENT '规则配置JSON', 
+	start_time DATETIME NOT NULL COMMENT '开始时间', 
+	end_time DATETIME NOT NULL COMMENT '结束时间', 
+	priority INTEGER NOT NULL COMMENT '优先级，数值越大越优先', 
+	can_superpose SMALLINT NOT NULL COMMENT '是否可叠加：0否/1是', 
+	status SMALLINT NOT NULL COMMENT '状态：0禁用/1启用', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	is_deleted SMALLINT NOT NULL COMMENT '删除标记：0未删除/1已删除', 
+	CONSTRAINT pk_mkt_promotion PRIMARY KEY (promotion_id)
+)COMMENT='促销活动表';
+
+CREATE TABLE mkt_seckill (
+	seckill_id BIGINT NOT NULL COMMENT '秒杀ID' AUTO_INCREMENT, 
+	activity_name VARCHAR(200) NOT NULL COMMENT '活动名称', 
+	sku_id BIGINT NOT NULL COMMENT 'SKU ID', 
+	original_price NUMERIC(12, 2) NOT NULL COMMENT '原价', 
+	seckill_price NUMERIC(12, 2) NOT NULL COMMENT '秒杀价', 
+	total_stock INTEGER NOT NULL COMMENT '总库存', 
+	remaining_stock INTEGER NOT NULL COMMENT '剩余库存', 
+	limit_per_user INTEGER NOT NULL COMMENT '每人限购数量', 
+	start_time DATETIME NOT NULL COMMENT '开始时间', 
+	end_time DATETIME NOT NULL COMMENT '结束时间', 
+	status SMALLINT NOT NULL COMMENT '状态：0未开始/1进行中/2已结束/3已售罄', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_mkt_seckill PRIMARY KEY (seckill_id)
+)COMMENT='秒杀活动表';
+
+CREATE TABLE mkt_user_coupon (
+	user_coupon_id BIGINT NOT NULL COMMENT '用户优惠券ID' AUTO_INCREMENT, 
+	user_id BIGINT NOT NULL COMMENT '用户ID', 
+	coupon_id BIGINT NOT NULL COMMENT '优惠券ID', 
+	batch_id BIGINT NOT NULL COMMENT '批次ID', 
+	receive_time DATETIME NOT NULL COMMENT '领取时间', 
+	expire_time DATETIME NOT NULL COMMENT '过期时间', 
+	status SMALLINT NOT NULL COMMENT '状态：0未使用/1已使用/2已过期', 
+	use_time DATETIME COMMENT '使用时间', 
+	order_id BIGINT COMMENT '使用订单ID', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_mkt_user_coupon PRIMARY KEY (user_coupon_id)
+)COMMENT='用户优惠券表';
 
 CREATE TABLE ord_order_main (
 	order_id BIGINT NOT NULL COMMENT '订单ID' AUTO_INCREMENT, 
@@ -175,6 +764,788 @@ CREATE TABLE pay_payment_channel (
 	CONSTRAINT pk_pay_payment_channel PRIMARY KEY (channel_id), 
 	CONSTRAINT uq_pay_payment_channel_channel_code UNIQUE (channel_code)
 )COMMENT='支付渠道表';
+
+CREATE TABLE prd_attribute (
+	attribute_id BIGINT NOT NULL COMMENT '属性ID' AUTO_INCREMENT, 
+	category_id BIGINT NOT NULL COMMENT '类目ID', 
+	attribute_name VARCHAR(100) NOT NULL COMMENT '属性名称，如：颜色/尺寸', 
+	attribute_type SMALLINT NOT NULL COMMENT '属性类型：1销售属性(SKU规格)/2基本属性/3扩展属性', 
+	input_type SMALLINT NOT NULL COMMENT '录入方式：1手工录入/2单选/3多选', 
+	sort_order INTEGER NOT NULL COMMENT '排序', 
+	is_required SMALLINT NOT NULL COMMENT '是否必填：0否/1是', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_prd_attribute PRIMARY KEY (attribute_id)
+)COMMENT='商品属性表';
+
+CREATE TABLE prd_attribute_value (
+	value_id BIGINT NOT NULL COMMENT '属性值ID' AUTO_INCREMENT, 
+	attribute_id BIGINT NOT NULL COMMENT '属性ID', 
+	value_name VARCHAR(100) NOT NULL COMMENT '属性值名称', 
+	sort_order INTEGER NOT NULL COMMENT '排序', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_prd_attribute_value PRIMARY KEY (value_id)
+)COMMENT='属性值表';
+
+CREATE TABLE prd_brand (
+	brand_id BIGINT NOT NULL COMMENT '品牌ID' AUTO_INCREMENT, 
+	brand_name VARCHAR(100) NOT NULL COMMENT '品牌名称', 
+	brand_name_en VARCHAR(100) COMMENT '品牌英文名', 
+	logo_url VARCHAR(255) COMMENT '品牌LOGO', 
+	description TEXT COMMENT '品牌介绍', 
+	website VARCHAR(255) COMMENT '官方网站', 
+	country VARCHAR(50) COMMENT '品牌国家', 
+	sort_order INTEGER NOT NULL COMMENT '排序', 
+	status SMALLINT NOT NULL COMMENT '状态：0禁用/1启用', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	is_deleted SMALLINT NOT NULL COMMENT '删除标记：0未删除/1已删除', 
+	CONSTRAINT pk_prd_brand PRIMARY KEY (brand_id)
+)COMMENT='品牌表';
+
+CREATE TABLE prd_category (
+	category_id BIGINT NOT NULL COMMENT '类目ID' AUTO_INCREMENT, 
+	category_name VARCHAR(100) NOT NULL COMMENT '类目名称', 
+	parent_id BIGINT NOT NULL COMMENT '父类目ID，0表示顶级', 
+	level SMALLINT NOT NULL COMMENT '层级：1一级/2二级/3三级', 
+	sort_order INTEGER NOT NULL COMMENT '排序', 
+	icon_url VARCHAR(255) COMMENT '图标URL', 
+	description VARCHAR(500) COMMENT '类目描述', 
+	status SMALLINT NOT NULL COMMENT '状态：0禁用/1启用', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	is_deleted SMALLINT NOT NULL COMMENT '删除标记：0未删除/1已删除', 
+	CONSTRAINT pk_prd_category PRIMARY KEY (category_id)
+)COMMENT='商品类目表';
+
+CREATE TABLE prd_description (
+	id BIGINT NOT NULL COMMENT '主键ID' AUTO_INCREMENT, 
+	product_id BIGINT NOT NULL COMMENT '商品ID', 
+	description TEXT NOT NULL COMMENT '商品详情HTML', 
+	mobile_description TEXT COMMENT '移动端详情HTML', 
+	parameters TEXT COMMENT '商品参数JSON', 
+	packaging_list TEXT COMMENT '包装清单', 
+	after_sales_service TEXT COMMENT '售后服务', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_prd_description PRIMARY KEY (id), 
+	CONSTRAINT uq_prd_description_product_id UNIQUE (product_id)
+)COMMENT='商品详情表';
+
+CREATE TABLE prd_image (
+	image_id BIGINT NOT NULL COMMENT '图片ID' AUTO_INCREMENT, 
+	product_id BIGINT NOT NULL COMMENT '商品ID', 
+	image_url VARCHAR(255) NOT NULL COMMENT '图片URL', 
+	image_type SMALLINT NOT NULL COMMENT '图片类型：1主图/2轮播图/3详情图', 
+	sort_order INTEGER NOT NULL COMMENT '排序', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_prd_image PRIMARY KEY (image_id)
+)COMMENT='商品图片表';
+
+CREATE TABLE prd_price_history (
+	id BIGINT NOT NULL COMMENT '主键ID' AUTO_INCREMENT, 
+	sku_id BIGINT NOT NULL COMMENT 'SKU ID', 
+	old_price NUMERIC(12, 2) NOT NULL COMMENT '原价格', 
+	new_price NUMERIC(12, 2) NOT NULL COMMENT '新价格', 
+	change_type SMALLINT NOT NULL COMMENT '变更类型：1调价/2促销/3成本变动', 
+	change_reason VARCHAR(500) COMMENT '变更原因', 
+	change_time DATETIME NOT NULL COMMENT '变更时间', 
+	operator_id BIGINT COMMENT '操作人ID', 
+	CONSTRAINT pk_prd_price_history PRIMARY KEY (id)
+)COMMENT='价格历史表';
+
+CREATE TABLE prd_product (
+	product_id BIGINT NOT NULL COMMENT '商品ID' AUTO_INCREMENT, 
+	product_no VARCHAR(32) NOT NULL COMMENT '商品编号', 
+	product_name VARCHAR(200) NOT NULL COMMENT '商品名称', 
+	category_id BIGINT NOT NULL COMMENT '类目ID', 
+	brand_id BIGINT COMMENT '品牌ID', 
+	main_image VARCHAR(255) NOT NULL COMMENT '主图URL', 
+	subtitle VARCHAR(500) COMMENT '副标题', 
+	keywords VARCHAR(500) COMMENT '搜索关键词', 
+	min_price NUMERIC(12, 2) NOT NULL COMMENT '最低价格', 
+	max_price NUMERIC(12, 2) NOT NULL COMMENT '最高价格', 
+	sales_count INTEGER NOT NULL COMMENT '销量', 
+	view_count INTEGER NOT NULL COMMENT '浏览量', 
+	favorite_count INTEGER NOT NULL COMMENT '收藏量', 
+	status SMALLINT NOT NULL COMMENT '状态：0草稿/1待审核/2审核通过/3已上架/4已下架/5已删除', 
+	shelf_time DATETIME COMMENT '上架时间', 
+	off_shelf_time DATETIME COMMENT '下架时间', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	is_deleted SMALLINT NOT NULL COMMENT '删除标记：0未删除/1已删除', 
+	CONSTRAINT pk_prd_product PRIMARY KEY (product_id), 
+	CONSTRAINT uq_prd_product_product_no UNIQUE (product_no)
+)COMMENT='商品SPU表';
+
+CREATE TABLE prd_sku (
+	sku_id BIGINT NOT NULL COMMENT 'SKU ID' AUTO_INCREMENT, 
+	sku_no VARCHAR(32) NOT NULL COMMENT 'SKU编号', 
+	product_id BIGINT NOT NULL COMMENT '商品ID', 
+	sku_name VARCHAR(200) NOT NULL COMMENT 'SKU名称', 
+	sku_spec VARCHAR(500) COMMENT '规格描述，如：红色/XL', 
+	market_price NUMERIC(12, 2) NOT NULL COMMENT '市场价', 
+	sell_price NUMERIC(12, 2) NOT NULL COMMENT '销售价', 
+	cost_price NUMERIC(12, 2) COMMENT '成本价', 
+	stock_quantity INTEGER NOT NULL COMMENT '库存数量', 
+	available_stock INTEGER NOT NULL COMMENT '可用库存', 
+	locked_stock INTEGER NOT NULL COMMENT '锁定库存', 
+	weight NUMERIC(10, 2) COMMENT '重量(kg)', 
+	volume NUMERIC(10, 2) COMMENT '体积(m³)', 
+	image_url VARCHAR(255) COMMENT 'SKU图片', 
+	barcode VARCHAR(50) COMMENT '条形码', 
+	sales_count INTEGER NOT NULL COMMENT '销量', 
+	status SMALLINT NOT NULL COMMENT '状态：0禁用/1启用', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	is_deleted SMALLINT NOT NULL COMMENT '删除标记：0未删除/1已删除', 
+	CONSTRAINT pk_prd_sku PRIMARY KEY (sku_id), 
+	CONSTRAINT uq_prd_sku_sku_no UNIQUE (sku_no)
+)COMMENT='商品SKU表';
+
+CREATE TABLE prd_sku_attribute (
+	id BIGINT NOT NULL COMMENT '主键ID' AUTO_INCREMENT, 
+	sku_id BIGINT NOT NULL COMMENT 'SKU ID', 
+	attribute_id BIGINT NOT NULL COMMENT '属性ID', 
+	value_id BIGINT NOT NULL COMMENT '属性值ID', 
+	CONSTRAINT pk_prd_sku_attribute PRIMARY KEY (id)
+)COMMENT='SKU属性关联表';
+
+CREATE TABLE pts_exchange_item (
+	item_id BIGINT NOT NULL COMMENT '明细ID' AUTO_INCREMENT, 
+	exchange_order_id BIGINT NOT NULL COMMENT '兑换订单ID', 
+	mall_product_id BIGINT NOT NULL COMMENT '商城商品ID', 
+	product_name VARCHAR(200) NOT NULL COMMENT '商品名称', 
+	product_image VARCHAR(255) COMMENT '商品图片', 
+	quantity INTEGER NOT NULL COMMENT '数量', 
+	points_price INTEGER NOT NULL COMMENT '单价(积分)', 
+	cash_price NUMERIC(12, 2) NOT NULL COMMENT '单价(现金)', 
+	total_points INTEGER NOT NULL COMMENT '小计(积分)', 
+	total_cash NUMERIC(12, 2) NOT NULL COMMENT '小计(现金)', 
+	delivery_status SMALLINT NOT NULL COMMENT '发货状态：0待发货/1已发货/2已签收/3已退货', 
+	tracking_no VARCHAR(50) COMMENT '物流单号', 
+	CONSTRAINT pk_pts_exchange_item PRIMARY KEY (item_id)
+)COMMENT='积分兑换订单明细表';
+
+CREATE TABLE pts_exchange_log (
+	log_id BIGINT NOT NULL COMMENT '日志ID' AUTO_INCREMENT, 
+	exchange_order_id BIGINT NOT NULL COMMENT '兑换订单ID', 
+	user_id BIGINT NOT NULL COMMENT '用户ID', 
+	action_type SMALLINT NOT NULL COMMENT '操作类型：1创建订单/2支付/3发货/4完成/5取消/6退款', 
+	points_change INTEGER NOT NULL COMMENT '积分变动', 
+	cash_change NUMERIC(12, 2) NOT NULL COMMENT '现金变动', 
+	before_status SMALLINT NOT NULL COMMENT '操作前状态', 
+	after_status SMALLINT NOT NULL COMMENT '操作后状态', 
+	operator_id BIGINT COMMENT '操作人ID', 
+	operator_type SMALLINT NOT NULL COMMENT '操作人类型：1用户/2系统/3管理员', 
+	remark VARCHAR(500) COMMENT '备注', 
+	log_time DATETIME NOT NULL COMMENT '记录时间', 
+	CONSTRAINT pk_pts_exchange_log PRIMARY KEY (log_id)
+)COMMENT='积分兑换日志表';
+
+CREATE TABLE pts_exchange_order (
+	exchange_order_id BIGINT NOT NULL COMMENT '兑换订单ID' AUTO_INCREMENT, 
+	order_no VARCHAR(32) NOT NULL COMMENT '订单号', 
+	user_id BIGINT NOT NULL COMMENT '用户ID', 
+	mall_product_id BIGINT NOT NULL COMMENT '商城商品ID', 
+	product_name VARCHAR(200) NOT NULL COMMENT '商品名称', 
+	product_image VARCHAR(255) COMMENT '商品图片', 
+	quantity INTEGER NOT NULL COMMENT '兑换数量', 
+	points_amount INTEGER NOT NULL COMMENT '积分金额', 
+	cash_amount NUMERIC(12, 2) NOT NULL COMMENT '现金金额', 
+	address_id BIGINT COMMENT '收货地址ID(实物商品)', 
+	receiver_name VARCHAR(50) COMMENT '收货人', 
+	receiver_phone VARCHAR(20) COMMENT '收货电话', 
+	receiver_address VARCHAR(500) COMMENT '收货地址', 
+	status SMALLINT NOT NULL COMMENT '状态：0待支付/1待发货/2已发货/3已完成/4已取消/5已退款', 
+	exchange_time DATETIME NOT NULL COMMENT '兑换时间', 
+	pay_time DATETIME COMMENT '支付时间', 
+	ship_time DATETIME COMMENT '发货时间', 
+	complete_time DATETIME COMMENT '完成时间', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_pts_exchange_order PRIMARY KEY (exchange_order_id), 
+	CONSTRAINT uq_pts_exchange_order_order_no UNIQUE (order_no)
+)COMMENT='积分兑换订单表';
+
+CREATE TABLE pts_gift_card (
+	card_id BIGINT NOT NULL COMMENT '卡ID' AUTO_INCREMENT, 
+	batch_id BIGINT NOT NULL COMMENT '批次ID', 
+	card_no VARCHAR(32) NOT NULL COMMENT '卡号', 
+	card_password VARCHAR(32) NOT NULL COMMENT '卡密', 
+	initial_amount NUMERIC(12, 2) NOT NULL COMMENT '初始金额', 
+	balance_amount NUMERIC(12, 2) NOT NULL COMMENT '余额', 
+	owner_user_id BIGINT COMMENT '持有人用户ID', 
+	bind_mobile VARCHAR(20) COMMENT '绑定手机号', 
+	status SMALLINT NOT NULL COMMENT '状态：0未发放/1已发放/2已激活/3已用完/4已过期/5已作废', 
+	issue_time DATETIME COMMENT '发放时间', 
+	activate_time DATETIME COMMENT '激活时间', 
+	expire_time DATETIME NOT NULL COMMENT '过期时间', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_pts_gift_card PRIMARY KEY (card_id), 
+	CONSTRAINT uq_pts_gift_card_card_no UNIQUE (card_no)
+)COMMENT='礼品卡表';
+
+CREATE TABLE pts_gift_card_batch (
+	batch_id BIGINT NOT NULL COMMENT '批次ID' AUTO_INCREMENT, 
+	batch_no VARCHAR(32) NOT NULL COMMENT '批次编号', 
+	batch_name VARCHAR(200) NOT NULL COMMENT '批次名称', 
+	card_type SMALLINT NOT NULL COMMENT '卡类型：1固定面额/2自定义金额', 
+	face_value NUMERIC(12, 2) COMMENT '面额(固定面额类型)', 
+	min_amount NUMERIC(12, 2) COMMENT '最小金额(自定义类型)', 
+	max_amount NUMERIC(12, 2) COMMENT '最大金额(自定义类型)', 
+	total_quantity INTEGER NOT NULL COMMENT '发行总量', 
+	issued_quantity INTEGER NOT NULL COMMENT '已发放数量', 
+	activated_quantity INTEGER NOT NULL COMMENT '已激活数量', 
+	used_quantity INTEGER NOT NULL COMMENT '已使用数量', 
+	valid_days INTEGER NOT NULL COMMENT '有效天数', 
+	use_scope SMALLINT NOT NULL COMMENT '使用范围：1全平台/2指定类目/3指定商品', 
+	scope_config TEXT COMMENT '范围配置JSON', 
+	status SMALLINT NOT NULL COMMENT '状态：0禁用/1启用', 
+	creator_id BIGINT NOT NULL COMMENT '创建人ID', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_pts_gift_card_batch PRIMARY KEY (batch_id), 
+	CONSTRAINT uq_pts_gift_card_batch_batch_no UNIQUE (batch_no)
+)COMMENT='礼品卡批次表';
+
+CREATE TABLE pts_mall_product (
+	mall_product_id BIGINT NOT NULL COMMENT '商城商品ID' AUTO_INCREMENT, 
+	product_code VARCHAR(32) NOT NULL COMMENT '商品编码', 
+	product_name VARCHAR(200) NOT NULL COMMENT '商品名称', 
+	product_type SMALLINT NOT NULL COMMENT '商品类型：1实物/2虚拟商品/3优惠券/4礼品卡', 
+	related_id BIGINT COMMENT '关联ID(SKU/优惠券/礼品卡)', 
+	main_image VARCHAR(255) NOT NULL COMMENT '主图', 
+	images TEXT COMMENT '图片列表JSON', 
+	description TEXT COMMENT '商品描述', 
+	points_price INTEGER NOT NULL COMMENT '积分价格', 
+	cash_price NUMERIC(12, 2) NOT NULL COMMENT '现金价格(积分+现金)', 
+	total_stock INTEGER NOT NULL COMMENT '总库存', 
+	available_stock INTEGER NOT NULL COMMENT '可用库存', 
+	exchange_count INTEGER NOT NULL COMMENT '兑换次数', 
+	exchange_limit INTEGER NOT NULL COMMENT '限兑数量，0不限', 
+	start_time DATETIME COMMENT '上架时间', 
+	end_time DATETIME COMMENT '下架时间', 
+	status SMALLINT NOT NULL COMMENT '状态：0待上架/1已上架/2已下架/3已售罄', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	is_deleted SMALLINT NOT NULL COMMENT '删除标记：0未删除/1已删除', 
+	CONSTRAINT pk_pts_mall_product PRIMARY KEY (mall_product_id), 
+	CONSTRAINT uq_pts_mall_product_product_code UNIQUE (product_code)
+)COMMENT='积分商城商品表';
+
+CREATE TABLE sea_filter (
+	filter_id BIGINT NOT NULL COMMENT '过滤器ID' AUTO_INCREMENT, 
+	filter_name VARCHAR(100) NOT NULL COMMENT '过滤器名称', 
+	filter_type SMALLINT NOT NULL COMMENT '过滤器类型：1价格区间/2品牌/3分类/4属性', 
+	filter_config TEXT NOT NULL COMMENT '过滤器配置JSON', 
+	apply_scope SMALLINT NOT NULL COMMENT '应用范围：1全局/2分类/3关键词', 
+	target_ids TEXT COMMENT '目标ID列表JSON', 
+	sort_order INTEGER NOT NULL COMMENT '排序', 
+	status SMALLINT NOT NULL COMMENT '状态：0禁用/1启用', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_sea_filter PRIMARY KEY (filter_id)
+)COMMENT='搜索过滤器表';
+
+CREATE TABLE sea_hot_search (
+	hot_id BIGINT NOT NULL COMMENT '热搜ID' AUTO_INCREMENT, 
+	keyword VARCHAR(200) NOT NULL COMMENT '搜索关键词', 
+	search_count INTEGER NOT NULL COMMENT '搜索次数', 
+	click_count INTEGER NOT NULL COMMENT '点击次数', 
+	conversion_count INTEGER NOT NULL COMMENT '转化次数', 
+	stat_date DATETIME NOT NULL COMMENT '统计日期', 
+	rank_position INTEGER NOT NULL COMMENT '排名位置', 
+	status SMALLINT NOT NULL COMMENT '状态：0隐藏/1显示/2推荐', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_sea_hot_search PRIMARY KEY (hot_id)
+)COMMENT='热搜词表';
+
+CREATE TABLE sea_product_recommend (
+	recommend_id BIGINT NOT NULL COMMENT '推荐ID' AUTO_INCREMENT, 
+	user_id BIGINT NOT NULL COMMENT '用户ID', 
+	product_id BIGINT NOT NULL COMMENT '商品ID', 
+	strategy_id BIGINT NOT NULL COMMENT '策略ID', 
+	recommend_score INTEGER NOT NULL COMMENT '推荐分数', 
+	recommend_reason VARCHAR(500) COMMENT '推荐理由', 
+	scene_type SMALLINT NOT NULL COMMENT '推荐场景：1首页/2详情页/3购物车/4搜索结果', 
+	position INTEGER NOT NULL COMMENT '展示位置', 
+	is_shown SMALLINT NOT NULL COMMENT '是否展示：0否/1是', 
+	is_clicked SMALLINT NOT NULL COMMENT '是否点击：0否/1是', 
+	is_converted SMALLINT NOT NULL COMMENT '是否转化：0否/1是', 
+	recommend_time DATETIME NOT NULL COMMENT '推荐时间', 
+	click_time DATETIME COMMENT '点击时间', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_sea_product_recommend PRIMARY KEY (recommend_id)
+)COMMENT='商品推荐记录表';
+
+CREATE TABLE sea_query (
+	query_id BIGINT NOT NULL COMMENT '查询ID' AUTO_INCREMENT, 
+	user_id BIGINT COMMENT '用户ID', 
+	keyword VARCHAR(200) NOT NULL COMMENT '搜索关键词', 
+	original_keyword VARCHAR(200) COMMENT '原始关键词(纠错前)', 
+	result_count INTEGER NOT NULL COMMENT '结果数量', 
+	click_count INTEGER NOT NULL COMMENT '点击次数', 
+	clicked_product_ids TEXT COMMENT '点击商品ID列表JSON', 
+	search_source SMALLINT NOT NULL COMMENT '搜索来源：1搜索框/2推荐/3相关搜索/4店铺搜索', 
+	device_type SMALLINT COMMENT '设备类型：1PC/2iOS/3Android/4小程序', 
+	search_time DATETIME NOT NULL COMMENT '搜索时间', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_sea_query PRIMARY KEY (query_id)
+)COMMENT='搜索查询记录表';
+
+CREATE TABLE sea_recommend_strategy (
+	strategy_id BIGINT NOT NULL COMMENT '策略ID' AUTO_INCREMENT, 
+	strategy_code VARCHAR(50) NOT NULL COMMENT '策略编码', 
+	strategy_name VARCHAR(200) NOT NULL COMMENT '策略名称', 
+	strategy_type SMALLINT NOT NULL COMMENT '策略类型：1协同过滤/2内容推荐/3热门推荐/4新品推荐/5个性化推荐', 
+	algorithm_type VARCHAR(50) NOT NULL COMMENT '算法类型：CF/CB/DNN等', 
+	target_scene SMALLINT NOT NULL COMMENT '目标场景：1首页/2详情页/3购物车/4搜索结果', 
+	config_params TEXT COMMENT '配置参数JSON', 
+	priority INTEGER NOT NULL COMMENT '优先级', 
+	status SMALLINT NOT NULL COMMENT '状态：0禁用/1启用/2测试', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_sea_recommend_strategy PRIMARY KEY (strategy_id), 
+	CONSTRAINT uq_sea_recommend_strategy_strategy_code UNIQUE (strategy_code)
+)COMMENT='推荐策略表';
+
+CREATE TABLE sea_result (
+	result_id BIGINT NOT NULL COMMENT '结果ID' AUTO_INCREMENT, 
+	query_id BIGINT NOT NULL COMMENT '查询ID', 
+	product_id BIGINT NOT NULL COMMENT '商品ID', 
+	rank_score INTEGER NOT NULL COMMENT '排序分数', 
+	rank_position INTEGER NOT NULL COMMENT '排序位置', 
+	is_clicked SMALLINT NOT NULL COMMENT '是否被点击：0否/1是', 
+	click_time DATETIME COMMENT '点击时间', 
+	CONSTRAINT pk_sea_result PRIMARY KEY (result_id)
+)COMMENT='搜索结果缓存表';
+
+CREATE TABLE sea_synonym (
+	synonym_id BIGINT NOT NULL COMMENT '同义词ID' AUTO_INCREMENT, 
+	keyword VARCHAR(200) NOT NULL COMMENT '关键词', 
+	synonym VARCHAR(200) NOT NULL COMMENT '同义词', 
+	synonym_type SMALLINT NOT NULL COMMENT '类型：1完全同义/2近义词/3纠错词', 
+	priority INTEGER NOT NULL COMMENT '优先级', 
+	status SMALLINT NOT NULL COMMENT '状态：0禁用/1启用', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_sea_synonym PRIMARY KEY (synonym_id)
+)COMMENT='搜索同义词表';
+
+CREATE TABLE sea_user_recommend (
+	id BIGINT NOT NULL COMMENT '主键ID' AUTO_INCREMENT, 
+	user_id BIGINT NOT NULL COMMENT '用户ID', 
+	preferred_categories TEXT COMMENT '偏好类目JSON', 
+	preferred_brands TEXT COMMENT '偏好品牌JSON', 
+	preferred_price_range VARCHAR(100) COMMENT '偏好价格区间', 
+	click_rate INTEGER NOT NULL COMMENT '推荐点击率(‰)', 
+	conversion_rate INTEGER NOT NULL COMMENT '推荐转化率(‰)', 
+	last_recommend_time DATETIME COMMENT '最后推荐时间', 
+	recommend_count INTEGER NOT NULL COMMENT '累计推荐次数', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_sea_user_recommend PRIMARY KEY (id), 
+	CONSTRAINT uq_sea_user_recommend_user_id UNIQUE (user_id)
+)COMMENT='用户推荐偏好表';
+
+CREATE TABLE soc_comment (
+	comment_id BIGINT NOT NULL COMMENT '评价ID' AUTO_INCREMENT, 
+	order_id BIGINT NOT NULL COMMENT '订单ID', 
+	product_id BIGINT NOT NULL COMMENT '商品ID', 
+	sku_id BIGINT NOT NULL COMMENT 'SKU ID', 
+	user_id BIGINT NOT NULL COMMENT '用户ID', 
+	rating SMALLINT NOT NULL COMMENT '评分：1-5星', 
+	content TEXT NOT NULL COMMENT '评价内容', 
+	images TEXT COMMENT '评价图片JSON', 
+	is_anonymous SMALLINT NOT NULL COMMENT '是否匿名：0否/1是', 
+	is_additional SMALLINT NOT NULL COMMENT '是否追评：0否/1是', 
+	additional_comment_id BIGINT COMMENT '原评价ID(追评时)', 
+	like_count INTEGER NOT NULL COMMENT '点赞数', 
+	reply_count INTEGER NOT NULL COMMENT '回复数', 
+	status SMALLINT NOT NULL COMMENT '状态：0待审核/1已通过/2已拒绝/3已隐藏', 
+	audit_time DATETIME COMMENT '审核时间', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	is_deleted SMALLINT NOT NULL COMMENT '删除标记：0未删除/1已删除', 
+	CONSTRAINT pk_soc_comment PRIMARY KEY (comment_id)
+)COMMENT='商品评价表';
+
+CREATE TABLE soc_follow (
+	follow_id BIGINT NOT NULL COMMENT '关注ID' AUTO_INCREMENT, 
+	follower_id BIGINT NOT NULL COMMENT '粉丝ID', 
+	followee_id BIGINT NOT NULL COMMENT '被关注者ID', 
+	follow_type SMALLINT NOT NULL COMMENT '关注类型：1用户/2商家/3话题', 
+	follow_time DATETIME NOT NULL COMMENT '关注时间', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_soc_follow PRIMARY KEY (follow_id)
+)COMMENT='用户关注表';
+
+CREATE TABLE soc_message (
+	message_id BIGINT NOT NULL COMMENT '消息ID' AUTO_INCREMENT, 
+	sender_id BIGINT NOT NULL COMMENT '发送者ID', 
+	receiver_id BIGINT NOT NULL COMMENT '接收者ID', 
+	message_type SMALLINT NOT NULL COMMENT '消息类型：1系统通知/2订单消息/3活动通知/4私信', 
+	title VARCHAR(200) NOT NULL COMMENT '消息标题', 
+	content TEXT NOT NULL COMMENT '消息内容', 
+	is_read SMALLINT NOT NULL COMMENT '是否已读：0否/1是', 
+	read_time DATETIME COMMENT '阅读时间', 
+	send_time DATETIME NOT NULL COMMENT '发送时间', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_soc_message PRIMARY KEY (message_id)
+)COMMENT='用户站内信表';
+
+CREATE TABLE soc_reply (
+	reply_id BIGINT NOT NULL COMMENT '回复ID' AUTO_INCREMENT, 
+	comment_id BIGINT NOT NULL COMMENT '评价ID', 
+	reply_type SMALLINT NOT NULL COMMENT '回复类型：1商家回复/2用户追问/3其他用户', 
+	replier_id BIGINT NOT NULL COMMENT '回复人ID', 
+	replier_type SMALLINT NOT NULL COMMENT '回复人类型：1用户/2商家/3客服', 
+	content TEXT NOT NULL COMMENT '回复内容', 
+	reply_time DATETIME NOT NULL COMMENT '回复时间', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	is_deleted SMALLINT NOT NULL COMMENT '删除标记：0未删除/1已删除', 
+	CONSTRAINT pk_soc_reply PRIMARY KEY (reply_id)
+)COMMENT='评价回复表';
+
+CREATE TABLE sup_product (
+	id BIGINT NOT NULL COMMENT '主键ID' AUTO_INCREMENT, 
+	supplier_id BIGINT NOT NULL COMMENT '供应商ID', 
+	sku_id BIGINT NOT NULL COMMENT 'SKU ID', 
+	supplier_sku_code VARCHAR(50) COMMENT '供应商商品编码', 
+	purchase_price NUMERIC(12, 2) NOT NULL COMMENT '采购价', 
+	min_order_quantity INTEGER NOT NULL COMMENT '最小起订量', 
+	lead_time_days INTEGER NOT NULL COMMENT '供货周期(天)', 
+	is_default SMALLINT NOT NULL COMMENT '是否默认供应商：0否/1是', 
+	status SMALLINT NOT NULL COMMENT '状态：0禁用/1启用', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_sup_product PRIMARY KEY (id)
+)COMMENT='供应商商品关联表';
+
+CREATE TABLE sup_purchase_item (
+	item_id BIGINT NOT NULL COMMENT '明细ID' AUTO_INCREMENT, 
+	purchase_id BIGINT NOT NULL COMMENT '采购ID', 
+	sku_id BIGINT NOT NULL COMMENT 'SKU ID', 
+	sku_name VARCHAR(200) NOT NULL COMMENT 'SKU名称', 
+	purchase_price NUMERIC(12, 2) NOT NULL COMMENT '采购单价', 
+	order_quantity INTEGER NOT NULL COMMENT '订购数量', 
+	received_quantity INTEGER NOT NULL COMMENT '已收货数量', 
+	qualified_quantity INTEGER NOT NULL COMMENT '合格数量', 
+	total_amount NUMERIC(12, 2) NOT NULL COMMENT '小计金额', 
+	tax_rate NUMERIC(5, 4) NOT NULL COMMENT '税率', 
+	CONSTRAINT pk_sup_purchase_item PRIMARY KEY (item_id)
+)COMMENT='采购订单明细表';
+
+CREATE TABLE sup_purchase_order (
+	purchase_id BIGINT NOT NULL COMMENT '采购ID' AUTO_INCREMENT, 
+	purchase_no VARCHAR(32) NOT NULL COMMENT '采购单号', 
+	supplier_id BIGINT NOT NULL COMMENT '供应商ID', 
+	warehouse_id BIGINT NOT NULL COMMENT '入库仓库ID', 
+	total_amount NUMERIC(12, 2) NOT NULL COMMENT '订单总金额', 
+	tax_amount NUMERIC(12, 2) NOT NULL COMMENT '税额', 
+	discount_amount NUMERIC(12, 2) NOT NULL COMMENT '优惠金额', 
+	actual_amount NUMERIC(12, 2) NOT NULL COMMENT '实付金额', 
+	status SMALLINT NOT NULL COMMENT '状态：0待审核/1已审核/2部分到货/3全部到货/4已取消', 
+	buyer_id BIGINT NOT NULL COMMENT '采购员ID', 
+	auditor_id BIGINT COMMENT '审核人ID', 
+	order_time DATETIME NOT NULL COMMENT '下单时间', 
+	audit_time DATETIME COMMENT '审核时间', 
+	expected_arrival_time DATETIME COMMENT '预计到货时间', 
+	remark TEXT COMMENT '备注', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_sup_purchase_order PRIMARY KEY (purchase_id), 
+	CONSTRAINT uq_sup_purchase_order_purchase_no UNIQUE (purchase_no)
+)COMMENT='采购订单表';
+
+CREATE TABLE sup_quality_check (
+	check_id BIGINT NOT NULL COMMENT '质检ID' AUTO_INCREMENT, 
+	receiving_id BIGINT NOT NULL COMMENT '收货ID', 
+	sku_id BIGINT NOT NULL COMMENT 'SKU ID', 
+	check_quantity INTEGER NOT NULL COMMENT '质检数量', 
+	qualified_quantity INTEGER NOT NULL COMMENT '合格数量', 
+	defective_quantity INTEGER NOT NULL COMMENT '不合格数量', 
+	check_result SMALLINT NOT NULL COMMENT '质检结果：1合格/2不合格/3部分合格', 
+	defect_reason TEXT COMMENT '不合格原因', 
+	checker_id BIGINT NOT NULL COMMENT '质检员ID', 
+	check_time DATETIME NOT NULL COMMENT '质检时间', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_sup_quality_check PRIMARY KEY (check_id)
+)COMMENT='质检记录表';
+
+CREATE TABLE sup_receiving (
+	receiving_id BIGINT NOT NULL COMMENT '收货ID' AUTO_INCREMENT, 
+	receiving_no VARCHAR(32) NOT NULL COMMENT '收货单号', 
+	purchase_id BIGINT NOT NULL COMMENT '采购ID', 
+	item_id BIGINT NOT NULL COMMENT '采购明细ID', 
+	sku_id BIGINT NOT NULL COMMENT 'SKU ID', 
+	received_quantity INTEGER NOT NULL COMMENT '收货数量', 
+	qualified_quantity INTEGER NOT NULL COMMENT '合格数量', 
+	defective_quantity INTEGER NOT NULL COMMENT '不合格数量', 
+	receiver_id BIGINT NOT NULL COMMENT '收货人ID', 
+	receiving_time DATETIME NOT NULL COMMENT '收货时间', 
+	remark VARCHAR(500) COMMENT '备注', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_sup_receiving PRIMARY KEY (receiving_id), 
+	CONSTRAINT uq_sup_receiving_receiving_no UNIQUE (receiving_no)
+)COMMENT='采购收货记录表';
+
+CREATE TABLE sup_supplier (
+	supplier_id BIGINT NOT NULL COMMENT '供应商ID' AUTO_INCREMENT, 
+	supplier_code VARCHAR(32) NOT NULL COMMENT '供应商编码', 
+	supplier_name VARCHAR(200) NOT NULL COMMENT '供应商名称', 
+	contact_person VARCHAR(50) COMMENT '联系人', 
+	contact_phone VARCHAR(20) COMMENT '联系电话', 
+	contact_email VARCHAR(100) COMMENT '联系邮箱', 
+	address VARCHAR(500) COMMENT '地址', 
+	business_license VARCHAR(50) COMMENT '营业执照号', 
+	tax_number VARCHAR(50) COMMENT '税号', 
+	cooperation_start_date DATETIME COMMENT '合作开始日期', 
+	credit_level VARCHAR(10) COMMENT '信用等级：A/B/C/D', 
+	payment_term_days INTEGER NOT NULL COMMENT '账期(天)', 
+	status SMALLINT NOT NULL COMMENT '状态：0禁用/1启用/2暂停合作', 
+	remark TEXT COMMENT '备注', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	is_deleted SMALLINT NOT NULL COMMENT '删除标记：0未删除/1已删除', 
+	CONSTRAINT pk_sup_supplier PRIMARY KEY (supplier_id), 
+	CONSTRAINT uq_sup_supplier_supplier_code UNIQUE (supplier_code)
+)COMMENT='供应商表';
+
+CREATE TABLE sys_config (
+	config_id BIGINT NOT NULL COMMENT '配置ID' AUTO_INCREMENT, 
+	config_key VARCHAR(100) NOT NULL COMMENT '配置键', 
+	config_value TEXT NOT NULL COMMENT '配置值', 
+	config_group VARCHAR(50) NOT NULL COMMENT '配置分组', 
+	config_desc VARCHAR(500) COMMENT '配置描述', 
+	value_type VARCHAR(20) NOT NULL COMMENT '值类型：string/int/json', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_sys_config PRIMARY KEY (config_id), 
+	CONSTRAINT uq_sys_config_config_key UNIQUE (config_key)
+)COMMENT='系统配置表';
+
+CREATE TABLE sys_dict (
+	dict_id BIGINT NOT NULL COMMENT '字典ID' AUTO_INCREMENT, 
+	dict_type VARCHAR(50) NOT NULL COMMENT '字典类型', 
+	dict_code VARCHAR(50) NOT NULL COMMENT '字典编码', 
+	dict_value VARCHAR(200) NOT NULL COMMENT '字典值', 
+	sort_order INTEGER NOT NULL COMMENT '排序', 
+	is_default SMALLINT NOT NULL COMMENT '是否默认：0否/1是', 
+	status SMALLINT NOT NULL COMMENT '状态：0禁用/1启用', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_sys_dict PRIMARY KEY (dict_id)
+)COMMENT='数据字典表';
+
+CREATE TABLE sys_express (
+	company_id BIGINT NOT NULL COMMENT '公司ID' AUTO_INCREMENT, 
+	company_code VARCHAR(32) NOT NULL COMMENT '公司编码', 
+	company_name VARCHAR(100) NOT NULL COMMENT '公司名称', 
+	company_website VARCHAR(255) COMMENT '官网', 
+	phone VARCHAR(50) COMMENT '客服电话', 
+	api_type SMALLINT COMMENT 'API类型：1快递鸟/2快递100/3自建', 
+	api_config TEXT COMMENT 'API配置JSON', 
+	sort_order INTEGER NOT NULL COMMENT '排序', 
+	status SMALLINT NOT NULL COMMENT '状态：0禁用/1启用', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_sys_express PRIMARY KEY (company_id), 
+	CONSTRAINT uq_sys_express_company_code UNIQUE (company_code)
+)COMMENT='快递公司配置表';
+
+CREATE TABLE sys_notification (
+	template_id BIGINT NOT NULL COMMENT '模板ID' AUTO_INCREMENT, 
+	template_code VARCHAR(50) NOT NULL COMMENT '模板编码', 
+	template_name VARCHAR(200) NOT NULL COMMENT '模板名称', 
+	channel SMALLINT NOT NULL COMMENT '通知渠道：1站内信/2短信/3邮件/4推送', 
+	title VARCHAR(200) COMMENT '标题模板', 
+	content TEXT NOT NULL COMMENT '内容模板', 
+	variables VARCHAR(500) COMMENT '变量说明JSON', 
+	status SMALLINT NOT NULL COMMENT '状态：0禁用/1启用', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_sys_notification PRIMARY KEY (template_id), 
+	CONSTRAINT uq_sys_notification_template_code UNIQUE (template_code)
+)COMMENT='通知模板表';
+
+CREATE TABLE sys_region (
+	region_id BIGINT NOT NULL COMMENT '地区ID' AUTO_INCREMENT, 
+	region_code VARCHAR(20) NOT NULL COMMENT '地区编码', 
+	region_name VARCHAR(100) NOT NULL COMMENT '地区名称', 
+	parent_code VARCHAR(20) NOT NULL COMMENT '父地区编码', 
+	level SMALLINT NOT NULL COMMENT '层级：1省/2市/3区县', 
+	zip_code VARCHAR(10) COMMENT '邮编', 
+	sort_order INTEGER NOT NULL COMMENT '排序', 
+	CONSTRAINT pk_sys_region PRIMARY KEY (region_id), 
+	CONSTRAINT uq_sys_region_region_code UNIQUE (region_code)
+)COMMENT='地区表';
+
+CREATE TABLE usr_address (
+	address_id BIGINT NOT NULL COMMENT '地址ID' AUTO_INCREMENT, 
+	user_id BIGINT NOT NULL COMMENT '用户ID', 
+	receiver_name VARCHAR(50) NOT NULL COMMENT '收货人姓名', 
+	receiver_phone VARCHAR(20) NOT NULL COMMENT '收货人电话', 
+	province VARCHAR(50) NOT NULL COMMENT '省份', 
+	city VARCHAR(50) NOT NULL COMMENT '城市', 
+	district VARCHAR(50) NOT NULL COMMENT '区县', 
+	detail_address VARCHAR(500) NOT NULL COMMENT '详细地址', 
+	postal_code VARCHAR(10) COMMENT '邮编', 
+	address_label VARCHAR(20) COMMENT '地址标签：家/公司/学校', 
+	is_default SMALLINT NOT NULL COMMENT '是否默认地址：0否/1是', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	is_deleted SMALLINT NOT NULL COMMENT '删除标记：0未删除/1已删除', 
+	CONSTRAINT pk_usr_address PRIMARY KEY (address_id)
+)COMMENT='用户收货地址表';
+
+CREATE TABLE usr_browsing_history (
+	history_id BIGINT NOT NULL COMMENT '历史ID' AUTO_INCREMENT, 
+	user_id BIGINT NOT NULL COMMENT '用户ID', 
+	product_id BIGINT NOT NULL COMMENT '商品ID', 
+	browse_time DATETIME NOT NULL COMMENT '浏览时间', 
+	browse_duration INTEGER COMMENT '浏览时长(秒)', 
+	source_page VARCHAR(100) COMMENT '来源页面', 
+	CONSTRAINT pk_usr_browsing_history PRIMARY KEY (history_id)
+)COMMENT='用户浏览历史表';
+
+CREATE TABLE usr_cart (
+	cart_id BIGINT NOT NULL COMMENT '购物车ID' AUTO_INCREMENT, 
+	user_id BIGINT NOT NULL COMMENT '用户ID', 
+	sku_id BIGINT NOT NULL COMMENT 'SKU ID', 
+	quantity INTEGER NOT NULL COMMENT '数量', 
+	is_checked SMALLINT NOT NULL COMMENT '是否选中：0否/1是', 
+	is_valid SMALLINT NOT NULL COMMENT '是否有效：0否/1是', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_usr_cart PRIMARY KEY (cart_id)
+)COMMENT='购物车表';
+
+CREATE TABLE usr_favorite (
+	favorite_id BIGINT NOT NULL COMMENT '收藏ID' AUTO_INCREMENT, 
+	user_id BIGINT NOT NULL COMMENT '用户ID', 
+	product_id BIGINT NOT NULL COMMENT '商品ID', 
+	favorite_time DATETIME NOT NULL COMMENT '收藏时间', 
+	is_notified SMALLINT NOT NULL COMMENT '是否已通知降价：0否/1是', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_usr_favorite PRIMARY KEY (favorite_id)
+)COMMENT='用户收藏表';
+
+CREATE TABLE usr_growth (
+	growth_id BIGINT NOT NULL COMMENT '成长值ID' AUTO_INCREMENT, 
+	user_id BIGINT NOT NULL COMMENT '用户ID', 
+	change_type SMALLINT NOT NULL COMMENT '变动类型：1增加/2减少', 
+	change_value INTEGER NOT NULL COMMENT '变动值', 
+	before_value INTEGER NOT NULL COMMENT '变动前成长值', 
+	after_value INTEGER NOT NULL COMMENT '变动后成长值', 
+	source_type SMALLINT NOT NULL COMMENT '来源类型：1购物/2评价/3签到/4活动/5其他', 
+	source_id VARCHAR(64) COMMENT '来源ID', 
+	remark VARCHAR(200) COMMENT '备注', 
+	change_time DATETIME NOT NULL COMMENT '变动时间', 
+	CONSTRAINT pk_usr_growth PRIMARY KEY (growth_id)
+)COMMENT='用户成长值记录表';
+
+CREATE TABLE usr_level (
+	level_id BIGINT NOT NULL COMMENT '等级ID' AUTO_INCREMENT, 
+	level INTEGER NOT NULL COMMENT '等级：1/2/3...', 
+	level_name VARCHAR(50) NOT NULL COMMENT '等级名称', 
+	level_icon VARCHAR(255) COMMENT '等级图标', 
+	min_growth INTEGER NOT NULL COMMENT '最小成长值', 
+	max_growth INTEGER COMMENT '最大成长值，null表示无上限', 
+	discount_rate NUMERIC(3, 2) NOT NULL COMMENT '折扣率', 
+	free_shipping SMALLINT NOT NULL COMMENT '包邮特权：0否/1是', 
+	priority_customer_service SMALLINT NOT NULL COMMENT '优先客服：0否/1是', 
+	privileges TEXT COMMENT '等级特权描述', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_usr_level PRIMARY KEY (level_id), 
+	CONSTRAINT uq_usr_level_level UNIQUE (level)
+)COMMENT='会员等级配置表';
+
+CREATE TABLE usr_points (
+	points_id BIGINT NOT NULL COMMENT '积分ID' AUTO_INCREMENT, 
+	user_id BIGINT NOT NULL COMMENT '用户ID', 
+	change_type SMALLINT NOT NULL COMMENT '变动类型：1获得/2消费/3过期/4退回', 
+	change_value INTEGER NOT NULL COMMENT '变动值', 
+	before_value INTEGER NOT NULL COMMENT '变动前积分', 
+	after_value INTEGER NOT NULL COMMENT '变动后积分', 
+	source_type SMALLINT NOT NULL COMMENT '来源类型：1购物/2签到/3活动/4兑换/5其他', 
+	source_id VARCHAR(64) COMMENT '来源ID', 
+	expire_time DATETIME COMMENT '过期时间', 
+	remark VARCHAR(200) COMMENT '备注', 
+	change_time DATETIME NOT NULL COMMENT '变动时间', 
+	CONSTRAINT pk_usr_points PRIMARY KEY (points_id)
+)COMMENT='用户积分变动记录表';
+
+CREATE TABLE usr_profile (
+	profile_id BIGINT NOT NULL COMMENT '画像ID' AUTO_INCREMENT, 
+	user_id BIGINT NOT NULL COMMENT '用户ID', 
+	level_id BIGINT NOT NULL COMMENT '会员等级ID', 
+	growth_value INTEGER NOT NULL COMMENT '成长值', 
+	points INTEGER NOT NULL COMMENT '积分', 
+	total_orders INTEGER NOT NULL COMMENT '总订单数', 
+	total_amount NUMERIC(12, 2) NOT NULL COMMENT '累计消费金额', 
+	avg_order_amount NUMERIC(12, 2) NOT NULL COMMENT '平均订单金额', 
+	last_order_time DATETIME COMMENT '最后下单时间', 
+	favorite_category VARCHAR(200) COMMENT '偏好类目', 
+	rfm_score INTEGER COMMENT 'RFM总分', 
+	recency_score INTEGER COMMENT '最近购买得分', 
+	frequency_score INTEGER COMMENT '购买频率得分', 
+	monetary_score INTEGER COMMENT '购买金额得分', 
+	user_tags VARCHAR(500) COMMENT '用户标签(JSON)', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	CONSTRAINT pk_usr_profile PRIMARY KEY (profile_id), 
+	CONSTRAINT uq_usr_profile_user_id UNIQUE (user_id)
+)COMMENT='用户画像表';
+
+CREATE TABLE usr_search_history (
+	history_id BIGINT NOT NULL COMMENT '历史ID' AUTO_INCREMENT, 
+	user_id BIGINT NOT NULL COMMENT '用户ID', 
+	keyword VARCHAR(200) NOT NULL COMMENT '搜索关键词', 
+	result_count INTEGER COMMENT '搜索结果数', 
+	clicked_product_id BIGINT COMMENT '点击的商品ID', 
+	search_time DATETIME NOT NULL COMMENT '搜索时间', 
+	CONSTRAINT pk_usr_search_history PRIMARY KEY (history_id)
+)COMMENT='用户搜索历史表';
+
+CREATE TABLE usr_user (
+	user_id BIGINT NOT NULL COMMENT '用户ID' AUTO_INCREMENT, 
+	username VARCHAR(50) NOT NULL COMMENT '用户名', 
+	mobile VARCHAR(20) COMMENT '手机号', 
+	email VARCHAR(100) COMMENT '邮箱', 
+	password_hash VARCHAR(128) NOT NULL COMMENT '密码哈希', 
+	salt VARCHAR(32) NOT NULL COMMENT '密码盐值', 
+	nickname VARCHAR(50) COMMENT '昵称', 
+	avatar_url VARCHAR(255) COMMENT '头像URL', 
+	gender SMALLINT NOT NULL COMMENT '性别：0未知/1男/2女', 
+	birthday DATE COMMENT '生日', 
+	register_source SMALLINT NOT NULL COMMENT '注册来源：1Web/2iOS/3Android/4WeChat/5其他', 
+	register_time DATETIME NOT NULL COMMENT '注册时间', 
+	last_login_time DATETIME COMMENT '最后登录时间', 
+	last_login_ip VARCHAR(50) COMMENT '最后登录IP', 
+	status SMALLINT NOT NULL COMMENT '状态：0禁用/1正常/2冻结', 
+	created_at DATETIME NOT NULL COMMENT '创建时间', 
+	updated_at DATETIME NOT NULL COMMENT '更新时间', 
+	is_deleted SMALLINT NOT NULL COMMENT '删除标记：0未删除/1已删除', 
+	CONSTRAINT pk_usr_user PRIMARY KEY (user_id), 
+	CONSTRAINT uq_usr_user_username UNIQUE (username), 
+	CONSTRAINT uq_usr_user_mobile UNIQUE (mobile), 
+	CONSTRAINT uq_usr_user_email UNIQUE (email)
+)COMMENT='用户基础信息表';
 
 CREATE TABLE log_delivery_route (
 	route_id BIGINT NOT NULL COMMENT '路线ID' AUTO_INCREMENT, 

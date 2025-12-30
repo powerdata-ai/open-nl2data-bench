@@ -52,6 +52,313 @@ CREATE TABLE afs_knowledge (
 	CONSTRAINT pk_afs_knowledge PRIMARY KEY (knowledge_id)
 );
 
+CREATE TABLE ana_conversion (
+	id BIGSERIAL NOT NULL, 
+	stat_date DATE NOT NULL, 
+	funnel_type SMALLINT NOT NULL, 
+	target_id BIGINT, 
+	visit_uv INTEGER NOT NULL, 
+	product_view_uv INTEGER NOT NULL, 
+	add_cart_uv INTEGER NOT NULL, 
+	order_uv INTEGER NOT NULL, 
+	payment_uv INTEGER NOT NULL, 
+	view_rate NUMERIC(5, 4) NOT NULL, 
+	add_cart_rate NUMERIC(5, 4) NOT NULL, 
+	order_rate NUMERIC(5, 4) NOT NULL, 
+	payment_rate NUMERIC(5, 4) NOT NULL, 
+	CONSTRAINT pk_ana_conversion PRIMARY KEY (id)
+);
+
+CREATE TABLE ana_product_view (
+	id BIGSERIAL NOT NULL, 
+	product_id BIGINT NOT NULL, 
+	stat_date DATE NOT NULL, 
+	view_count INTEGER NOT NULL, 
+	unique_visitor INTEGER NOT NULL, 
+	avg_duration INTEGER NOT NULL, 
+	add_cart_count INTEGER NOT NULL, 
+	order_count INTEGER NOT NULL, 
+	conversion_rate NUMERIC(5, 4) NOT NULL, 
+	CONSTRAINT pk_ana_product_view PRIMARY KEY (id)
+);
+
+CREATE TABLE ana_sales_daily (
+	id BIGSERIAL NOT NULL, 
+	stat_date DATE NOT NULL, 
+	category_id BIGINT, 
+	order_count INTEGER NOT NULL, 
+	order_amount NUMERIC(12, 2) NOT NULL, 
+	paid_order_count INTEGER NOT NULL, 
+	paid_amount NUMERIC(12, 2) NOT NULL, 
+	new_user_count INTEGER NOT NULL, 
+	active_user_count INTEGER NOT NULL, 
+	refund_order_count INTEGER NOT NULL, 
+	refund_amount NUMERIC(12, 2) NOT NULL, 
+	CONSTRAINT pk_ana_sales_daily PRIMARY KEY (id)
+);
+
+CREATE TABLE ana_user_behavior (
+	behavior_id BIGSERIAL NOT NULL, 
+	user_id BIGINT NOT NULL, 
+	behavior_type SMALLINT NOT NULL, 
+	target_type SMALLINT NOT NULL, 
+	target_id BIGINT NOT NULL, 
+	session_id VARCHAR(64), 
+	device_type SMALLINT, 
+	behavior_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_ana_user_behavior PRIMARY KEY (behavior_id)
+);
+
+CREATE TABLE cms_article (
+	article_id BIGSERIAL NOT NULL, 
+	category_id BIGINT NOT NULL, 
+	title VARCHAR(200) NOT NULL, 
+	subtitle VARCHAR(500), 
+	cover_image VARCHAR(255), 
+	content TEXT NOT NULL, 
+	summary VARCHAR(500), 
+	author_id BIGINT NOT NULL, 
+	view_count INTEGER NOT NULL, 
+	like_count INTEGER NOT NULL, 
+	status SMALLINT NOT NULL, 
+	publish_time TIMESTAMP WITHOUT TIME ZONE, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	is_deleted SMALLINT NOT NULL, 
+	CONSTRAINT pk_cms_article PRIMARY KEY (article_id)
+);
+
+CREATE TABLE cms_banner (
+	banner_id BIGSERIAL NOT NULL, 
+	banner_name VARCHAR(100) NOT NULL, 
+	position SMALLINT NOT NULL, 
+	image_url VARCHAR(255) NOT NULL, 
+	link_url VARCHAR(255), 
+	link_type SMALLINT, 
+	sort_order INTEGER NOT NULL, 
+	start_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	end_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	is_deleted SMALLINT NOT NULL, 
+	CONSTRAINT pk_cms_banner PRIMARY KEY (banner_id)
+);
+
+CREATE TABLE cms_navigation (
+	nav_id BIGSERIAL NOT NULL, 
+	parent_id BIGINT NOT NULL, 
+	nav_name VARCHAR(100) NOT NULL, 
+	nav_url VARCHAR(255), 
+	nav_icon VARCHAR(255), 
+	position SMALLINT NOT NULL, 
+	sort_order INTEGER NOT NULL, 
+	is_external SMALLINT NOT NULL, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_cms_navigation PRIMARY KEY (nav_id)
+);
+
+CREATE TABLE cms_topic (
+	topic_id BIGSERIAL NOT NULL, 
+	topic_name VARCHAR(200) NOT NULL, 
+	cover_image VARCHAR(255) NOT NULL, 
+	description TEXT, 
+	content TEXT NOT NULL, 
+	product_ids TEXT, 
+	view_count INTEGER NOT NULL, 
+	start_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	end_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	is_deleted SMALLINT NOT NULL, 
+	CONSTRAINT pk_cms_topic PRIMARY KEY (topic_id)
+);
+
+CREATE TABLE cus_conversation (
+	conversation_id BIGSERIAL NOT NULL, 
+	user_id BIGINT NOT NULL, 
+	agent_id BIGINT, 
+	channel SMALLINT NOT NULL, 
+	start_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	end_time TIMESTAMP WITHOUT TIME ZONE, 
+	message_count INTEGER NOT NULL, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_cus_conversation PRIMARY KEY (conversation_id)
+);
+
+CREATE TABLE cus_message (
+	message_id BIGSERIAL NOT NULL, 
+	conversation_id BIGINT NOT NULL, 
+	sender_id BIGINT NOT NULL, 
+	sender_type SMALLINT NOT NULL, 
+	message_type SMALLINT NOT NULL, 
+	content TEXT NOT NULL, 
+	send_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_cus_message PRIMARY KEY (message_id)
+);
+
+CREATE TABLE cus_satisfaction (
+	satisfaction_id BIGSERIAL NOT NULL, 
+	ticket_id BIGINT, 
+	conversation_id BIGINT, 
+	user_id BIGINT NOT NULL, 
+	agent_id BIGINT NOT NULL, 
+	rating SMALLINT NOT NULL, 
+	tags VARCHAR(500), 
+	comment TEXT, 
+	evaluate_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_cus_satisfaction PRIMARY KEY (satisfaction_id)
+);
+
+CREATE TABLE cus_ticket (
+	ticket_id BIGSERIAL NOT NULL, 
+	ticket_no VARCHAR(32) NOT NULL, 
+	user_id BIGINT NOT NULL, 
+	order_id BIGINT, 
+	category SMALLINT NOT NULL, 
+	title VARCHAR(200) NOT NULL, 
+	description TEXT NOT NULL, 
+	priority SMALLINT NOT NULL, 
+	status SMALLINT NOT NULL, 
+	assignee_id BIGINT, 
+	assign_time TIMESTAMP WITHOUT TIME ZONE, 
+	resolve_time TIMESTAMP WITHOUT TIME ZONE, 
+	close_time TIMESTAMP WITHOUT TIME ZONE, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_cus_ticket PRIMARY KEY (ticket_id), 
+	CONSTRAINT uq_cus_ticket_ticket_no UNIQUE (ticket_no)
+);
+
+CREATE TABLE inv_adjustment (
+	adjustment_id BIGSERIAL NOT NULL, 
+	adjustment_no VARCHAR(32) NOT NULL, 
+	sku_id BIGINT NOT NULL, 
+	warehouse_id BIGINT NOT NULL, 
+	adjustment_type SMALLINT NOT NULL, 
+	adjustment_quantity INTEGER NOT NULL, 
+	before_quantity INTEGER NOT NULL, 
+	after_quantity INTEGER NOT NULL, 
+	reason VARCHAR(500), 
+	operator_id BIGINT NOT NULL, 
+	auditor_id BIGINT, 
+	adjustment_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	audit_time TIMESTAMP WITHOUT TIME ZONE, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_inv_adjustment PRIMARY KEY (adjustment_id), 
+	CONSTRAINT uq_inv_adjustment_adjustment_no UNIQUE (adjustment_no)
+);
+
+CREATE TABLE inv_allocation (
+	allocation_id BIGSERIAL NOT NULL, 
+	order_id BIGINT NOT NULL, 
+	order_item_id BIGINT NOT NULL, 
+	sku_id BIGINT NOT NULL, 
+	warehouse_id BIGINT NOT NULL, 
+	allocated_quantity INTEGER NOT NULL, 
+	picked_quantity INTEGER NOT NULL, 
+	shipped_quantity INTEGER NOT NULL, 
+	status SMALLINT NOT NULL, 
+	allocation_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_inv_allocation PRIMARY KEY (allocation_id)
+);
+
+CREATE TABLE inv_reservation (
+	reservation_id BIGSERIAL NOT NULL, 
+	order_id BIGINT NOT NULL, 
+	sku_id BIGINT NOT NULL, 
+	warehouse_id BIGINT NOT NULL, 
+	reserved_quantity INTEGER NOT NULL, 
+	status SMALLINT NOT NULL, 
+	reservation_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	expire_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	release_time TIMESTAMP WITHOUT TIME ZONE, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_inv_reservation PRIMARY KEY (reservation_id)
+);
+
+CREATE TABLE inv_safety_stock (
+	id BIGSERIAL NOT NULL, 
+	sku_id BIGINT NOT NULL, 
+	warehouse_id BIGINT NOT NULL, 
+	safety_stock INTEGER NOT NULL, 
+	reorder_point INTEGER NOT NULL, 
+	max_stock INTEGER NOT NULL, 
+	lead_time_days INTEGER NOT NULL, 
+	auto_purchase SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_inv_safety_stock PRIMARY KEY (id)
+);
+
+CREATE TABLE inv_stock (
+	stock_id BIGSERIAL NOT NULL, 
+	sku_id BIGINT NOT NULL, 
+	warehouse_id BIGINT NOT NULL, 
+	total_quantity INTEGER NOT NULL, 
+	available_quantity INTEGER NOT NULL, 
+	locked_quantity INTEGER NOT NULL, 
+	allocated_quantity INTEGER NOT NULL, 
+	defective_quantity INTEGER NOT NULL, 
+	safety_stock INTEGER NOT NULL, 
+	reorder_point INTEGER NOT NULL, 
+	max_stock INTEGER NOT NULL, 
+	last_in_time TIMESTAMP WITHOUT TIME ZONE, 
+	last_out_time TIMESTAMP WITHOUT TIME ZONE, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_inv_stock PRIMARY KEY (stock_id)
+);
+
+CREATE TABLE inv_stock_log (
+	log_id BIGSERIAL NOT NULL, 
+	stock_id BIGINT NOT NULL, 
+	sku_id BIGINT NOT NULL, 
+	warehouse_id BIGINT NOT NULL, 
+	change_type SMALLINT NOT NULL, 
+	change_quantity INTEGER NOT NULL, 
+	before_quantity INTEGER NOT NULL, 
+	after_quantity INTEGER NOT NULL, 
+	business_no VARCHAR(64), 
+	business_type SMALLINT, 
+	remark VARCHAR(500), 
+	operator_id BIGINT, 
+	log_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_inv_stock_log PRIMARY KEY (log_id)
+);
+
+CREATE TABLE inv_transfer (
+	transfer_id BIGSERIAL NOT NULL, 
+	transfer_no VARCHAR(32) NOT NULL, 
+	sku_id BIGINT NOT NULL, 
+	from_warehouse_id BIGINT NOT NULL, 
+	to_warehouse_id BIGINT NOT NULL, 
+	transfer_quantity INTEGER NOT NULL, 
+	actual_quantity INTEGER NOT NULL, 
+	status SMALLINT NOT NULL, 
+	applicant_id BIGINT NOT NULL, 
+	auditor_id BIGINT, 
+	apply_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	audit_time TIMESTAMP WITHOUT TIME ZONE, 
+	out_time TIMESTAMP WITHOUT TIME ZONE, 
+	in_time TIMESTAMP WITHOUT TIME ZONE, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_inv_transfer PRIMARY KEY (transfer_id), 
+	CONSTRAINT uq_inv_transfer_transfer_no UNIQUE (transfer_no)
+);
+
 CREATE TABLE log_logistics_company (
 	company_id BIGSERIAL NOT NULL, 
 	company_code VARCHAR(50) NOT NULL, 
@@ -108,6 +415,288 @@ CREATE TABLE log_warehouse (
 	is_deleted SMALLINT NOT NULL, 
 	CONSTRAINT pk_log_warehouse PRIMARY KEY (warehouse_id), 
 	CONSTRAINT uq_log_warehouse_warehouse_code UNIQUE (warehouse_code)
+);
+
+CREATE TABLE mch_account (
+	account_id BIGSERIAL NOT NULL, 
+	merchant_id BIGINT NOT NULL, 
+	balance NUMERIC(12, 2) NOT NULL, 
+	frozen_amount NUMERIC(12, 2) NOT NULL, 
+	total_income NUMERIC(12, 2) NOT NULL, 
+	total_withdraw NUMERIC(12, 2) NOT NULL, 
+	bank_name VARCHAR(100), 
+	bank_account VARCHAR(50), 
+	account_name VARCHAR(100), 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_mch_account PRIMARY KEY (account_id), 
+	CONSTRAINT uq_mch_account_merchant_id UNIQUE (merchant_id)
+);
+
+CREATE TABLE mch_category (
+	category_id BIGSERIAL NOT NULL, 
+	parent_id BIGINT NOT NULL, 
+	category_name VARCHAR(100) NOT NULL, 
+	category_level SMALLINT NOT NULL, 
+	commission_rate NUMERIC(5, 4) NOT NULL, 
+	sort_order INTEGER NOT NULL, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_mch_category PRIMARY KEY (category_id)
+);
+
+CREATE TABLE mch_merchant (
+	merchant_id BIGSERIAL NOT NULL, 
+	merchant_code VARCHAR(32) NOT NULL, 
+	merchant_name VARCHAR(200) NOT NULL, 
+	merchant_type SMALLINT NOT NULL, 
+	category_id BIGINT NOT NULL, 
+	legal_person VARCHAR(50) NOT NULL, 
+	business_license VARCHAR(50) NOT NULL, 
+	tax_number VARCHAR(50) NOT NULL, 
+	contact_person VARCHAR(50) NOT NULL, 
+	contact_phone VARCHAR(20) NOT NULL, 
+	contact_email VARCHAR(100), 
+	settle_type SMALLINT NOT NULL, 
+	commission_rate NUMERIC(5, 4) NOT NULL, 
+	status SMALLINT NOT NULL, 
+	cooperation_start_date TIMESTAMP WITHOUT TIME ZONE, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	is_deleted SMALLINT NOT NULL, 
+	CONSTRAINT pk_mch_merchant PRIMARY KEY (merchant_id), 
+	CONSTRAINT uq_mch_merchant_merchant_code UNIQUE (merchant_code)
+);
+
+CREATE TABLE mch_settlement (
+	settlement_id BIGSERIAL NOT NULL, 
+	settlement_no VARCHAR(32) NOT NULL, 
+	merchant_id BIGINT NOT NULL, 
+	settlement_date DATE NOT NULL, 
+	order_count INTEGER NOT NULL, 
+	order_amount NUMERIC(12, 2) NOT NULL, 
+	refund_amount NUMERIC(12, 2) NOT NULL, 
+	commission_amount NUMERIC(12, 2) NOT NULL, 
+	settlement_amount NUMERIC(12, 2) NOT NULL, 
+	actual_amount NUMERIC(12, 2) NOT NULL, 
+	status SMALLINT NOT NULL, 
+	confirm_time TIMESTAMP WITHOUT TIME ZONE, 
+	settle_time TIMESTAMP WITHOUT TIME ZONE, 
+	remark TEXT, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_mch_settlement PRIMARY KEY (settlement_id), 
+	CONSTRAINT uq_mch_settlement_settlement_no UNIQUE (settlement_no)
+);
+
+CREATE TABLE mch_store (
+	store_id BIGSERIAL NOT NULL, 
+	store_code VARCHAR(32) NOT NULL, 
+	store_name VARCHAR(200) NOT NULL, 
+	merchant_id BIGINT NOT NULL, 
+	province VARCHAR(50) NOT NULL, 
+	city VARCHAR(50) NOT NULL, 
+	district VARCHAR(50) NOT NULL, 
+	address VARCHAR(500) NOT NULL, 
+	longitude NUMERIC(10, 6), 
+	latitude NUMERIC(10, 6), 
+	contact_person VARCHAR(50) NOT NULL, 
+	contact_phone VARCHAR(20) NOT NULL, 
+	business_hours VARCHAR(100), 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	is_deleted SMALLINT NOT NULL, 
+	CONSTRAINT pk_mch_store PRIMARY KEY (store_id), 
+	CONSTRAINT uq_mch_store_store_code UNIQUE (store_code)
+);
+
+CREATE TABLE mch_store_inventory (
+	inventory_id BIGSERIAL NOT NULL, 
+	store_id BIGINT NOT NULL, 
+	sku_id BIGINT NOT NULL, 
+	total_quantity INTEGER NOT NULL, 
+	available_quantity INTEGER NOT NULL, 
+	locked_quantity INTEGER NOT NULL, 
+	min_stock INTEGER NOT NULL, 
+	max_stock INTEGER NOT NULL, 
+	last_in_time TIMESTAMP WITHOUT TIME ZONE, 
+	last_out_time TIMESTAMP WITHOUT TIME ZONE, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_mch_store_inventory PRIMARY KEY (inventory_id)
+);
+
+CREATE TABLE mch_store_order (
+	store_order_id BIGSERIAL NOT NULL, 
+	order_no VARCHAR(32) NOT NULL, 
+	store_id BIGINT NOT NULL, 
+	staff_id BIGINT NOT NULL, 
+	user_id BIGINT, 
+	member_no VARCHAR(32), 
+	total_amount NUMERIC(12, 2) NOT NULL, 
+	discount_amount NUMERIC(12, 2) NOT NULL, 
+	actual_amount NUMERIC(12, 2) NOT NULL, 
+	payment_method SMALLINT NOT NULL, 
+	status SMALLINT NOT NULL, 
+	order_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	pay_time TIMESTAMP WITHOUT TIME ZONE, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_mch_store_order PRIMARY KEY (store_order_id), 
+	CONSTRAINT uq_mch_store_order_order_no UNIQUE (order_no)
+);
+
+CREATE TABLE mch_store_staff (
+	staff_id BIGSERIAL NOT NULL, 
+	store_id BIGINT NOT NULL, 
+	staff_code VARCHAR(32) NOT NULL, 
+	staff_name VARCHAR(50) NOT NULL, 
+	mobile VARCHAR(20) NOT NULL, 
+	id_card VARCHAR(20), 
+	position VARCHAR(50) NOT NULL, 
+	role_type SMALLINT NOT NULL, 
+	entry_date TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	leave_date TIMESTAMP WITHOUT TIME ZONE, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	is_deleted SMALLINT NOT NULL, 
+	CONSTRAINT pk_mch_store_staff PRIMARY KEY (staff_id), 
+	CONSTRAINT uq_mch_store_staff_staff_code UNIQUE (staff_code)
+);
+
+CREATE TABLE mkt_campaign (
+	campaign_id BIGSERIAL NOT NULL, 
+	campaign_name VARCHAR(200) NOT NULL, 
+	campaign_type SMALLINT NOT NULL, 
+	start_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	end_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	apply_scope SMALLINT NOT NULL, 
+	target_rule TEXT, 
+	budget_amount NUMERIC(12, 2), 
+	used_amount NUMERIC(12, 2) NOT NULL, 
+	status SMALLINT NOT NULL, 
+	creator_id BIGINT NOT NULL, 
+	description TEXT, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	is_deleted SMALLINT NOT NULL, 
+	CONSTRAINT pk_mkt_campaign PRIMARY KEY (campaign_id)
+);
+
+CREATE TABLE mkt_coupon (
+	coupon_id BIGSERIAL NOT NULL, 
+	batch_id BIGINT NOT NULL, 
+	coupon_code VARCHAR(32) NOT NULL, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_mkt_coupon PRIMARY KEY (coupon_id), 
+	CONSTRAINT uq_mkt_coupon_coupon_code UNIQUE (coupon_code)
+);
+
+CREATE TABLE mkt_coupon_batch (
+	batch_id BIGSERIAL NOT NULL, 
+	batch_no VARCHAR(32) NOT NULL, 
+	batch_name VARCHAR(200) NOT NULL, 
+	coupon_type SMALLINT NOT NULL, 
+	discount_type SMALLINT NOT NULL, 
+	discount_value NUMERIC(12, 2) NOT NULL, 
+	min_order_amount NUMERIC(12, 2) NOT NULL, 
+	max_discount_amount NUMERIC(12, 2), 
+	total_quantity INTEGER NOT NULL, 
+	received_quantity INTEGER NOT NULL, 
+	used_quantity INTEGER NOT NULL, 
+	receive_start_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	receive_end_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	valid_days INTEGER NOT NULL, 
+	receive_limit INTEGER NOT NULL, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_mkt_coupon_batch PRIMARY KEY (batch_id), 
+	CONSTRAINT uq_mkt_coupon_batch_batch_no UNIQUE (batch_no)
+);
+
+CREATE TABLE mkt_discount_rule (
+	rule_id BIGSERIAL NOT NULL, 
+	rule_name VARCHAR(200) NOT NULL, 
+	rule_type SMALLINT NOT NULL, 
+	target_type SMALLINT NOT NULL, 
+	target_ids TEXT, 
+	discount_config TEXT NOT NULL, 
+	priority INTEGER NOT NULL, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_mkt_discount_rule PRIMARY KEY (rule_id)
+);
+
+CREATE TABLE mkt_group_buy (
+	group_id BIGSERIAL NOT NULL, 
+	activity_name VARCHAR(200) NOT NULL, 
+	sku_id BIGINT NOT NULL, 
+	original_price NUMERIC(12, 2) NOT NULL, 
+	group_price NUMERIC(12, 2) NOT NULL, 
+	required_people INTEGER NOT NULL, 
+	valid_hours INTEGER NOT NULL, 
+	start_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	end_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_mkt_group_buy PRIMARY KEY (group_id)
+);
+
+CREATE TABLE mkt_promotion (
+	promotion_id BIGSERIAL NOT NULL, 
+	promotion_name VARCHAR(200) NOT NULL, 
+	promotion_type SMALLINT NOT NULL, 
+	rule_type SMALLINT NOT NULL, 
+	rule_config TEXT NOT NULL, 
+	start_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	end_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	priority INTEGER NOT NULL, 
+	can_superpose SMALLINT NOT NULL, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	is_deleted SMALLINT NOT NULL, 
+	CONSTRAINT pk_mkt_promotion PRIMARY KEY (promotion_id)
+);
+
+CREATE TABLE mkt_seckill (
+	seckill_id BIGSERIAL NOT NULL, 
+	activity_name VARCHAR(200) NOT NULL, 
+	sku_id BIGINT NOT NULL, 
+	original_price NUMERIC(12, 2) NOT NULL, 
+	seckill_price NUMERIC(12, 2) NOT NULL, 
+	total_stock INTEGER NOT NULL, 
+	remaining_stock INTEGER NOT NULL, 
+	limit_per_user INTEGER NOT NULL, 
+	start_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	end_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_mkt_seckill PRIMARY KEY (seckill_id)
+);
+
+CREATE TABLE mkt_user_coupon (
+	user_coupon_id BIGSERIAL NOT NULL, 
+	user_id BIGINT NOT NULL, 
+	coupon_id BIGINT NOT NULL, 
+	batch_id BIGINT NOT NULL, 
+	receive_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	expire_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	status SMALLINT NOT NULL, 
+	use_time TIMESTAMP WITHOUT TIME ZONE, 
+	order_id BIGINT, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_mkt_user_coupon PRIMARY KEY (user_coupon_id)
 );
 
 CREATE TABLE ord_order_main (
@@ -176,6 +765,788 @@ CREATE TABLE pay_payment_channel (
 	is_deleted SMALLINT NOT NULL, 
 	CONSTRAINT pk_pay_payment_channel PRIMARY KEY (channel_id), 
 	CONSTRAINT uq_pay_payment_channel_channel_code UNIQUE (channel_code)
+);
+
+CREATE TABLE prd_attribute (
+	attribute_id BIGSERIAL NOT NULL, 
+	category_id BIGINT NOT NULL, 
+	attribute_name VARCHAR(100) NOT NULL, 
+	attribute_type SMALLINT NOT NULL, 
+	input_type SMALLINT NOT NULL, 
+	sort_order INTEGER NOT NULL, 
+	is_required SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_prd_attribute PRIMARY KEY (attribute_id)
+);
+
+CREATE TABLE prd_attribute_value (
+	value_id BIGSERIAL NOT NULL, 
+	attribute_id BIGINT NOT NULL, 
+	value_name VARCHAR(100) NOT NULL, 
+	sort_order INTEGER NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_prd_attribute_value PRIMARY KEY (value_id)
+);
+
+CREATE TABLE prd_brand (
+	brand_id BIGSERIAL NOT NULL, 
+	brand_name VARCHAR(100) NOT NULL, 
+	brand_name_en VARCHAR(100), 
+	logo_url VARCHAR(255), 
+	description TEXT, 
+	website VARCHAR(255), 
+	country VARCHAR(50), 
+	sort_order INTEGER NOT NULL, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	is_deleted SMALLINT NOT NULL, 
+	CONSTRAINT pk_prd_brand PRIMARY KEY (brand_id)
+);
+
+CREATE TABLE prd_category (
+	category_id BIGSERIAL NOT NULL, 
+	category_name VARCHAR(100) NOT NULL, 
+	parent_id BIGINT NOT NULL, 
+	level SMALLINT NOT NULL, 
+	sort_order INTEGER NOT NULL, 
+	icon_url VARCHAR(255), 
+	description VARCHAR(500), 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	is_deleted SMALLINT NOT NULL, 
+	CONSTRAINT pk_prd_category PRIMARY KEY (category_id)
+);
+
+CREATE TABLE prd_description (
+	id BIGSERIAL NOT NULL, 
+	product_id BIGINT NOT NULL, 
+	description TEXT NOT NULL, 
+	mobile_description TEXT, 
+	parameters TEXT, 
+	packaging_list TEXT, 
+	after_sales_service TEXT, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_prd_description PRIMARY KEY (id), 
+	CONSTRAINT uq_prd_description_product_id UNIQUE (product_id)
+);
+
+CREATE TABLE prd_image (
+	image_id BIGSERIAL NOT NULL, 
+	product_id BIGINT NOT NULL, 
+	image_url VARCHAR(255) NOT NULL, 
+	image_type SMALLINT NOT NULL, 
+	sort_order INTEGER NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_prd_image PRIMARY KEY (image_id)
+);
+
+CREATE TABLE prd_price_history (
+	id BIGSERIAL NOT NULL, 
+	sku_id BIGINT NOT NULL, 
+	old_price NUMERIC(12, 2) NOT NULL, 
+	new_price NUMERIC(12, 2) NOT NULL, 
+	change_type SMALLINT NOT NULL, 
+	change_reason VARCHAR(500), 
+	change_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	operator_id BIGINT, 
+	CONSTRAINT pk_prd_price_history PRIMARY KEY (id)
+);
+
+CREATE TABLE prd_product (
+	product_id BIGSERIAL NOT NULL, 
+	product_no VARCHAR(32) NOT NULL, 
+	product_name VARCHAR(200) NOT NULL, 
+	category_id BIGINT NOT NULL, 
+	brand_id BIGINT, 
+	main_image VARCHAR(255) NOT NULL, 
+	subtitle VARCHAR(500), 
+	keywords VARCHAR(500), 
+	min_price NUMERIC(12, 2) NOT NULL, 
+	max_price NUMERIC(12, 2) NOT NULL, 
+	sales_count INTEGER NOT NULL, 
+	view_count INTEGER NOT NULL, 
+	favorite_count INTEGER NOT NULL, 
+	status SMALLINT NOT NULL, 
+	shelf_time TIMESTAMP WITHOUT TIME ZONE, 
+	off_shelf_time TIMESTAMP WITHOUT TIME ZONE, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	is_deleted SMALLINT NOT NULL, 
+	CONSTRAINT pk_prd_product PRIMARY KEY (product_id), 
+	CONSTRAINT uq_prd_product_product_no UNIQUE (product_no)
+);
+
+CREATE TABLE prd_sku (
+	sku_id BIGSERIAL NOT NULL, 
+	sku_no VARCHAR(32) NOT NULL, 
+	product_id BIGINT NOT NULL, 
+	sku_name VARCHAR(200) NOT NULL, 
+	sku_spec VARCHAR(500), 
+	market_price NUMERIC(12, 2) NOT NULL, 
+	sell_price NUMERIC(12, 2) NOT NULL, 
+	cost_price NUMERIC(12, 2), 
+	stock_quantity INTEGER NOT NULL, 
+	available_stock INTEGER NOT NULL, 
+	locked_stock INTEGER NOT NULL, 
+	weight NUMERIC(10, 2), 
+	volume NUMERIC(10, 2), 
+	image_url VARCHAR(255), 
+	barcode VARCHAR(50), 
+	sales_count INTEGER NOT NULL, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	is_deleted SMALLINT NOT NULL, 
+	CONSTRAINT pk_prd_sku PRIMARY KEY (sku_id), 
+	CONSTRAINT uq_prd_sku_sku_no UNIQUE (sku_no)
+);
+
+CREATE TABLE prd_sku_attribute (
+	id BIGSERIAL NOT NULL, 
+	sku_id BIGINT NOT NULL, 
+	attribute_id BIGINT NOT NULL, 
+	value_id BIGINT NOT NULL, 
+	CONSTRAINT pk_prd_sku_attribute PRIMARY KEY (id)
+);
+
+CREATE TABLE pts_exchange_item (
+	item_id BIGSERIAL NOT NULL, 
+	exchange_order_id BIGINT NOT NULL, 
+	mall_product_id BIGINT NOT NULL, 
+	product_name VARCHAR(200) NOT NULL, 
+	product_image VARCHAR(255), 
+	quantity INTEGER NOT NULL, 
+	points_price INTEGER NOT NULL, 
+	cash_price NUMERIC(12, 2) NOT NULL, 
+	total_points INTEGER NOT NULL, 
+	total_cash NUMERIC(12, 2) NOT NULL, 
+	delivery_status SMALLINT NOT NULL, 
+	tracking_no VARCHAR(50), 
+	CONSTRAINT pk_pts_exchange_item PRIMARY KEY (item_id)
+);
+
+CREATE TABLE pts_exchange_log (
+	log_id BIGSERIAL NOT NULL, 
+	exchange_order_id BIGINT NOT NULL, 
+	user_id BIGINT NOT NULL, 
+	action_type SMALLINT NOT NULL, 
+	points_change INTEGER NOT NULL, 
+	cash_change NUMERIC(12, 2) NOT NULL, 
+	before_status SMALLINT NOT NULL, 
+	after_status SMALLINT NOT NULL, 
+	operator_id BIGINT, 
+	operator_type SMALLINT NOT NULL, 
+	remark VARCHAR(500), 
+	log_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_pts_exchange_log PRIMARY KEY (log_id)
+);
+
+CREATE TABLE pts_exchange_order (
+	exchange_order_id BIGSERIAL NOT NULL, 
+	order_no VARCHAR(32) NOT NULL, 
+	user_id BIGINT NOT NULL, 
+	mall_product_id BIGINT NOT NULL, 
+	product_name VARCHAR(200) NOT NULL, 
+	product_image VARCHAR(255), 
+	quantity INTEGER NOT NULL, 
+	points_amount INTEGER NOT NULL, 
+	cash_amount NUMERIC(12, 2) NOT NULL, 
+	address_id BIGINT, 
+	receiver_name VARCHAR(50), 
+	receiver_phone VARCHAR(20), 
+	receiver_address VARCHAR(500), 
+	status SMALLINT NOT NULL, 
+	exchange_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	pay_time TIMESTAMP WITHOUT TIME ZONE, 
+	ship_time TIMESTAMP WITHOUT TIME ZONE, 
+	complete_time TIMESTAMP WITHOUT TIME ZONE, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_pts_exchange_order PRIMARY KEY (exchange_order_id), 
+	CONSTRAINT uq_pts_exchange_order_order_no UNIQUE (order_no)
+);
+
+CREATE TABLE pts_gift_card (
+	card_id BIGSERIAL NOT NULL, 
+	batch_id BIGINT NOT NULL, 
+	card_no VARCHAR(32) NOT NULL, 
+	card_password VARCHAR(32) NOT NULL, 
+	initial_amount NUMERIC(12, 2) NOT NULL, 
+	balance_amount NUMERIC(12, 2) NOT NULL, 
+	owner_user_id BIGINT, 
+	bind_mobile VARCHAR(20), 
+	status SMALLINT NOT NULL, 
+	issue_time TIMESTAMP WITHOUT TIME ZONE, 
+	activate_time TIMESTAMP WITHOUT TIME ZONE, 
+	expire_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_pts_gift_card PRIMARY KEY (card_id), 
+	CONSTRAINT uq_pts_gift_card_card_no UNIQUE (card_no)
+);
+
+CREATE TABLE pts_gift_card_batch (
+	batch_id BIGSERIAL NOT NULL, 
+	batch_no VARCHAR(32) NOT NULL, 
+	batch_name VARCHAR(200) NOT NULL, 
+	card_type SMALLINT NOT NULL, 
+	face_value NUMERIC(12, 2), 
+	min_amount NUMERIC(12, 2), 
+	max_amount NUMERIC(12, 2), 
+	total_quantity INTEGER NOT NULL, 
+	issued_quantity INTEGER NOT NULL, 
+	activated_quantity INTEGER NOT NULL, 
+	used_quantity INTEGER NOT NULL, 
+	valid_days INTEGER NOT NULL, 
+	use_scope SMALLINT NOT NULL, 
+	scope_config TEXT, 
+	status SMALLINT NOT NULL, 
+	creator_id BIGINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_pts_gift_card_batch PRIMARY KEY (batch_id), 
+	CONSTRAINT uq_pts_gift_card_batch_batch_no UNIQUE (batch_no)
+);
+
+CREATE TABLE pts_mall_product (
+	mall_product_id BIGSERIAL NOT NULL, 
+	product_code VARCHAR(32) NOT NULL, 
+	product_name VARCHAR(200) NOT NULL, 
+	product_type SMALLINT NOT NULL, 
+	related_id BIGINT, 
+	main_image VARCHAR(255) NOT NULL, 
+	images TEXT, 
+	description TEXT, 
+	points_price INTEGER NOT NULL, 
+	cash_price NUMERIC(12, 2) NOT NULL, 
+	total_stock INTEGER NOT NULL, 
+	available_stock INTEGER NOT NULL, 
+	exchange_count INTEGER NOT NULL, 
+	exchange_limit INTEGER NOT NULL, 
+	start_time TIMESTAMP WITHOUT TIME ZONE, 
+	end_time TIMESTAMP WITHOUT TIME ZONE, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	is_deleted SMALLINT NOT NULL, 
+	CONSTRAINT pk_pts_mall_product PRIMARY KEY (mall_product_id), 
+	CONSTRAINT uq_pts_mall_product_product_code UNIQUE (product_code)
+);
+
+CREATE TABLE sea_filter (
+	filter_id BIGSERIAL NOT NULL, 
+	filter_name VARCHAR(100) NOT NULL, 
+	filter_type SMALLINT NOT NULL, 
+	filter_config TEXT NOT NULL, 
+	apply_scope SMALLINT NOT NULL, 
+	target_ids TEXT, 
+	sort_order INTEGER NOT NULL, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_sea_filter PRIMARY KEY (filter_id)
+);
+
+CREATE TABLE sea_hot_search (
+	hot_id BIGSERIAL NOT NULL, 
+	keyword VARCHAR(200) NOT NULL, 
+	search_count INTEGER NOT NULL, 
+	click_count INTEGER NOT NULL, 
+	conversion_count INTEGER NOT NULL, 
+	stat_date TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	rank_position INTEGER NOT NULL, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_sea_hot_search PRIMARY KEY (hot_id)
+);
+
+CREATE TABLE sea_product_recommend (
+	recommend_id BIGSERIAL NOT NULL, 
+	user_id BIGINT NOT NULL, 
+	product_id BIGINT NOT NULL, 
+	strategy_id BIGINT NOT NULL, 
+	recommend_score INTEGER NOT NULL, 
+	recommend_reason VARCHAR(500), 
+	scene_type SMALLINT NOT NULL, 
+	position INTEGER NOT NULL, 
+	is_shown SMALLINT NOT NULL, 
+	is_clicked SMALLINT NOT NULL, 
+	is_converted SMALLINT NOT NULL, 
+	recommend_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	click_time TIMESTAMP WITHOUT TIME ZONE, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_sea_product_recommend PRIMARY KEY (recommend_id)
+);
+
+CREATE TABLE sea_query (
+	query_id BIGSERIAL NOT NULL, 
+	user_id BIGINT, 
+	keyword VARCHAR(200) NOT NULL, 
+	original_keyword VARCHAR(200), 
+	result_count INTEGER NOT NULL, 
+	click_count INTEGER NOT NULL, 
+	clicked_product_ids TEXT, 
+	search_source SMALLINT NOT NULL, 
+	device_type SMALLINT, 
+	search_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_sea_query PRIMARY KEY (query_id)
+);
+
+CREATE TABLE sea_recommend_strategy (
+	strategy_id BIGSERIAL NOT NULL, 
+	strategy_code VARCHAR(50) NOT NULL, 
+	strategy_name VARCHAR(200) NOT NULL, 
+	strategy_type SMALLINT NOT NULL, 
+	algorithm_type VARCHAR(50) NOT NULL, 
+	target_scene SMALLINT NOT NULL, 
+	config_params TEXT, 
+	priority INTEGER NOT NULL, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_sea_recommend_strategy PRIMARY KEY (strategy_id), 
+	CONSTRAINT uq_sea_recommend_strategy_strategy_code UNIQUE (strategy_code)
+);
+
+CREATE TABLE sea_result (
+	result_id BIGSERIAL NOT NULL, 
+	query_id BIGINT NOT NULL, 
+	product_id BIGINT NOT NULL, 
+	rank_score INTEGER NOT NULL, 
+	rank_position INTEGER NOT NULL, 
+	is_clicked SMALLINT NOT NULL, 
+	click_time TIMESTAMP WITHOUT TIME ZONE, 
+	CONSTRAINT pk_sea_result PRIMARY KEY (result_id)
+);
+
+CREATE TABLE sea_synonym (
+	synonym_id BIGSERIAL NOT NULL, 
+	keyword VARCHAR(200) NOT NULL, 
+	synonym VARCHAR(200) NOT NULL, 
+	synonym_type SMALLINT NOT NULL, 
+	priority INTEGER NOT NULL, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_sea_synonym PRIMARY KEY (synonym_id)
+);
+
+CREATE TABLE sea_user_recommend (
+	id BIGSERIAL NOT NULL, 
+	user_id BIGINT NOT NULL, 
+	preferred_categories TEXT, 
+	preferred_brands TEXT, 
+	preferred_price_range VARCHAR(100), 
+	click_rate INTEGER NOT NULL, 
+	conversion_rate INTEGER NOT NULL, 
+	last_recommend_time TIMESTAMP WITHOUT TIME ZONE, 
+	recommend_count INTEGER NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_sea_user_recommend PRIMARY KEY (id), 
+	CONSTRAINT uq_sea_user_recommend_user_id UNIQUE (user_id)
+);
+
+CREATE TABLE soc_comment (
+	comment_id BIGSERIAL NOT NULL, 
+	order_id BIGINT NOT NULL, 
+	product_id BIGINT NOT NULL, 
+	sku_id BIGINT NOT NULL, 
+	user_id BIGINT NOT NULL, 
+	rating SMALLINT NOT NULL, 
+	content TEXT NOT NULL, 
+	images TEXT, 
+	is_anonymous SMALLINT NOT NULL, 
+	is_additional SMALLINT NOT NULL, 
+	additional_comment_id BIGINT, 
+	like_count INTEGER NOT NULL, 
+	reply_count INTEGER NOT NULL, 
+	status SMALLINT NOT NULL, 
+	audit_time TIMESTAMP WITHOUT TIME ZONE, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	is_deleted SMALLINT NOT NULL, 
+	CONSTRAINT pk_soc_comment PRIMARY KEY (comment_id)
+);
+
+CREATE TABLE soc_follow (
+	follow_id BIGSERIAL NOT NULL, 
+	follower_id BIGINT NOT NULL, 
+	followee_id BIGINT NOT NULL, 
+	follow_type SMALLINT NOT NULL, 
+	follow_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_soc_follow PRIMARY KEY (follow_id)
+);
+
+CREATE TABLE soc_message (
+	message_id BIGSERIAL NOT NULL, 
+	sender_id BIGINT NOT NULL, 
+	receiver_id BIGINT NOT NULL, 
+	message_type SMALLINT NOT NULL, 
+	title VARCHAR(200) NOT NULL, 
+	content TEXT NOT NULL, 
+	is_read SMALLINT NOT NULL, 
+	read_time TIMESTAMP WITHOUT TIME ZONE, 
+	send_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_soc_message PRIMARY KEY (message_id)
+);
+
+CREATE TABLE soc_reply (
+	reply_id BIGSERIAL NOT NULL, 
+	comment_id BIGINT NOT NULL, 
+	reply_type SMALLINT NOT NULL, 
+	replier_id BIGINT NOT NULL, 
+	replier_type SMALLINT NOT NULL, 
+	content TEXT NOT NULL, 
+	reply_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	is_deleted SMALLINT NOT NULL, 
+	CONSTRAINT pk_soc_reply PRIMARY KEY (reply_id)
+);
+
+CREATE TABLE sup_product (
+	id BIGSERIAL NOT NULL, 
+	supplier_id BIGINT NOT NULL, 
+	sku_id BIGINT NOT NULL, 
+	supplier_sku_code VARCHAR(50), 
+	purchase_price NUMERIC(12, 2) NOT NULL, 
+	min_order_quantity INTEGER NOT NULL, 
+	lead_time_days INTEGER NOT NULL, 
+	is_default SMALLINT NOT NULL, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_sup_product PRIMARY KEY (id)
+);
+
+CREATE TABLE sup_purchase_item (
+	item_id BIGSERIAL NOT NULL, 
+	purchase_id BIGINT NOT NULL, 
+	sku_id BIGINT NOT NULL, 
+	sku_name VARCHAR(200) NOT NULL, 
+	purchase_price NUMERIC(12, 2) NOT NULL, 
+	order_quantity INTEGER NOT NULL, 
+	received_quantity INTEGER NOT NULL, 
+	qualified_quantity INTEGER NOT NULL, 
+	total_amount NUMERIC(12, 2) NOT NULL, 
+	tax_rate NUMERIC(5, 4) NOT NULL, 
+	CONSTRAINT pk_sup_purchase_item PRIMARY KEY (item_id)
+);
+
+CREATE TABLE sup_purchase_order (
+	purchase_id BIGSERIAL NOT NULL, 
+	purchase_no VARCHAR(32) NOT NULL, 
+	supplier_id BIGINT NOT NULL, 
+	warehouse_id BIGINT NOT NULL, 
+	total_amount NUMERIC(12, 2) NOT NULL, 
+	tax_amount NUMERIC(12, 2) NOT NULL, 
+	discount_amount NUMERIC(12, 2) NOT NULL, 
+	actual_amount NUMERIC(12, 2) NOT NULL, 
+	status SMALLINT NOT NULL, 
+	buyer_id BIGINT NOT NULL, 
+	auditor_id BIGINT, 
+	order_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	audit_time TIMESTAMP WITHOUT TIME ZONE, 
+	expected_arrival_time TIMESTAMP WITHOUT TIME ZONE, 
+	remark TEXT, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_sup_purchase_order PRIMARY KEY (purchase_id), 
+	CONSTRAINT uq_sup_purchase_order_purchase_no UNIQUE (purchase_no)
+);
+
+CREATE TABLE sup_quality_check (
+	check_id BIGSERIAL NOT NULL, 
+	receiving_id BIGINT NOT NULL, 
+	sku_id BIGINT NOT NULL, 
+	check_quantity INTEGER NOT NULL, 
+	qualified_quantity INTEGER NOT NULL, 
+	defective_quantity INTEGER NOT NULL, 
+	check_result SMALLINT NOT NULL, 
+	defect_reason TEXT, 
+	checker_id BIGINT NOT NULL, 
+	check_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_sup_quality_check PRIMARY KEY (check_id)
+);
+
+CREATE TABLE sup_receiving (
+	receiving_id BIGSERIAL NOT NULL, 
+	receiving_no VARCHAR(32) NOT NULL, 
+	purchase_id BIGINT NOT NULL, 
+	item_id BIGINT NOT NULL, 
+	sku_id BIGINT NOT NULL, 
+	received_quantity INTEGER NOT NULL, 
+	qualified_quantity INTEGER NOT NULL, 
+	defective_quantity INTEGER NOT NULL, 
+	receiver_id BIGINT NOT NULL, 
+	receiving_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	remark VARCHAR(500), 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_sup_receiving PRIMARY KEY (receiving_id), 
+	CONSTRAINT uq_sup_receiving_receiving_no UNIQUE (receiving_no)
+);
+
+CREATE TABLE sup_supplier (
+	supplier_id BIGSERIAL NOT NULL, 
+	supplier_code VARCHAR(32) NOT NULL, 
+	supplier_name VARCHAR(200) NOT NULL, 
+	contact_person VARCHAR(50), 
+	contact_phone VARCHAR(20), 
+	contact_email VARCHAR(100), 
+	address VARCHAR(500), 
+	business_license VARCHAR(50), 
+	tax_number VARCHAR(50), 
+	cooperation_start_date TIMESTAMP WITHOUT TIME ZONE, 
+	credit_level VARCHAR(10), 
+	payment_term_days INTEGER NOT NULL, 
+	status SMALLINT NOT NULL, 
+	remark TEXT, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	is_deleted SMALLINT NOT NULL, 
+	CONSTRAINT pk_sup_supplier PRIMARY KEY (supplier_id), 
+	CONSTRAINT uq_sup_supplier_supplier_code UNIQUE (supplier_code)
+);
+
+CREATE TABLE sys_config (
+	config_id BIGSERIAL NOT NULL, 
+	config_key VARCHAR(100) NOT NULL, 
+	config_value TEXT NOT NULL, 
+	config_group VARCHAR(50) NOT NULL, 
+	config_desc VARCHAR(500), 
+	value_type VARCHAR(20) NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_sys_config PRIMARY KEY (config_id), 
+	CONSTRAINT uq_sys_config_config_key UNIQUE (config_key)
+);
+
+CREATE TABLE sys_dict (
+	dict_id BIGSERIAL NOT NULL, 
+	dict_type VARCHAR(50) NOT NULL, 
+	dict_code VARCHAR(50) NOT NULL, 
+	dict_value VARCHAR(200) NOT NULL, 
+	sort_order INTEGER NOT NULL, 
+	is_default SMALLINT NOT NULL, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_sys_dict PRIMARY KEY (dict_id)
+);
+
+CREATE TABLE sys_express (
+	company_id BIGSERIAL NOT NULL, 
+	company_code VARCHAR(32) NOT NULL, 
+	company_name VARCHAR(100) NOT NULL, 
+	company_website VARCHAR(255), 
+	phone VARCHAR(50), 
+	api_type SMALLINT, 
+	api_config TEXT, 
+	sort_order INTEGER NOT NULL, 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_sys_express PRIMARY KEY (company_id), 
+	CONSTRAINT uq_sys_express_company_code UNIQUE (company_code)
+);
+
+CREATE TABLE sys_notification (
+	template_id BIGSERIAL NOT NULL, 
+	template_code VARCHAR(50) NOT NULL, 
+	template_name VARCHAR(200) NOT NULL, 
+	channel SMALLINT NOT NULL, 
+	title VARCHAR(200), 
+	content TEXT NOT NULL, 
+	variables VARCHAR(500), 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_sys_notification PRIMARY KEY (template_id), 
+	CONSTRAINT uq_sys_notification_template_code UNIQUE (template_code)
+);
+
+CREATE TABLE sys_region (
+	region_id BIGSERIAL NOT NULL, 
+	region_code VARCHAR(20) NOT NULL, 
+	region_name VARCHAR(100) NOT NULL, 
+	parent_code VARCHAR(20) NOT NULL, 
+	level SMALLINT NOT NULL, 
+	zip_code VARCHAR(10), 
+	sort_order INTEGER NOT NULL, 
+	CONSTRAINT pk_sys_region PRIMARY KEY (region_id), 
+	CONSTRAINT uq_sys_region_region_code UNIQUE (region_code)
+);
+
+CREATE TABLE usr_address (
+	address_id BIGSERIAL NOT NULL, 
+	user_id BIGINT NOT NULL, 
+	receiver_name VARCHAR(50) NOT NULL, 
+	receiver_phone VARCHAR(20) NOT NULL, 
+	province VARCHAR(50) NOT NULL, 
+	city VARCHAR(50) NOT NULL, 
+	district VARCHAR(50) NOT NULL, 
+	detail_address VARCHAR(500) NOT NULL, 
+	postal_code VARCHAR(10), 
+	address_label VARCHAR(20), 
+	is_default SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	is_deleted SMALLINT NOT NULL, 
+	CONSTRAINT pk_usr_address PRIMARY KEY (address_id)
+);
+
+CREATE TABLE usr_browsing_history (
+	history_id BIGSERIAL NOT NULL, 
+	user_id BIGINT NOT NULL, 
+	product_id BIGINT NOT NULL, 
+	browse_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	browse_duration INTEGER, 
+	source_page VARCHAR(100), 
+	CONSTRAINT pk_usr_browsing_history PRIMARY KEY (history_id)
+);
+
+CREATE TABLE usr_cart (
+	cart_id BIGSERIAL NOT NULL, 
+	user_id BIGINT NOT NULL, 
+	sku_id BIGINT NOT NULL, 
+	quantity INTEGER NOT NULL, 
+	is_checked SMALLINT NOT NULL, 
+	is_valid SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_usr_cart PRIMARY KEY (cart_id)
+);
+
+CREATE TABLE usr_favorite (
+	favorite_id BIGSERIAL NOT NULL, 
+	user_id BIGINT NOT NULL, 
+	product_id BIGINT NOT NULL, 
+	favorite_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	is_notified SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_usr_favorite PRIMARY KEY (favorite_id)
+);
+
+CREATE TABLE usr_growth (
+	growth_id BIGSERIAL NOT NULL, 
+	user_id BIGINT NOT NULL, 
+	change_type SMALLINT NOT NULL, 
+	change_value INTEGER NOT NULL, 
+	before_value INTEGER NOT NULL, 
+	after_value INTEGER NOT NULL, 
+	source_type SMALLINT NOT NULL, 
+	source_id VARCHAR(64), 
+	remark VARCHAR(200), 
+	change_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_usr_growth PRIMARY KEY (growth_id)
+);
+
+CREATE TABLE usr_level (
+	level_id BIGSERIAL NOT NULL, 
+	level INTEGER NOT NULL, 
+	level_name VARCHAR(50) NOT NULL, 
+	level_icon VARCHAR(255), 
+	min_growth INTEGER NOT NULL, 
+	max_growth INTEGER, 
+	discount_rate NUMERIC(3, 2) NOT NULL, 
+	free_shipping SMALLINT NOT NULL, 
+	priority_customer_service SMALLINT NOT NULL, 
+	privileges TEXT, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_usr_level PRIMARY KEY (level_id), 
+	CONSTRAINT uq_usr_level_level UNIQUE (level)
+);
+
+CREATE TABLE usr_points (
+	points_id BIGSERIAL NOT NULL, 
+	user_id BIGINT NOT NULL, 
+	change_type SMALLINT NOT NULL, 
+	change_value INTEGER NOT NULL, 
+	before_value INTEGER NOT NULL, 
+	after_value INTEGER NOT NULL, 
+	source_type SMALLINT NOT NULL, 
+	source_id VARCHAR(64), 
+	expire_time TIMESTAMP WITHOUT TIME ZONE, 
+	remark VARCHAR(200), 
+	change_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_usr_points PRIMARY KEY (points_id)
+);
+
+CREATE TABLE usr_profile (
+	profile_id BIGSERIAL NOT NULL, 
+	user_id BIGINT NOT NULL, 
+	level_id BIGINT NOT NULL, 
+	growth_value INTEGER NOT NULL, 
+	points INTEGER NOT NULL, 
+	total_orders INTEGER NOT NULL, 
+	total_amount NUMERIC(12, 2) NOT NULL, 
+	avg_order_amount NUMERIC(12, 2) NOT NULL, 
+	last_order_time TIMESTAMP WITHOUT TIME ZONE, 
+	favorite_category VARCHAR(200), 
+	rfm_score INTEGER, 
+	recency_score INTEGER, 
+	frequency_score INTEGER, 
+	monetary_score INTEGER, 
+	user_tags VARCHAR(500), 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_usr_profile PRIMARY KEY (profile_id), 
+	CONSTRAINT uq_usr_profile_user_id UNIQUE (user_id)
+);
+
+CREATE TABLE usr_search_history (
+	history_id BIGSERIAL NOT NULL, 
+	user_id BIGINT NOT NULL, 
+	keyword VARCHAR(200) NOT NULL, 
+	result_count INTEGER, 
+	clicked_product_id BIGINT, 
+	search_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	CONSTRAINT pk_usr_search_history PRIMARY KEY (history_id)
+);
+
+CREATE TABLE usr_user (
+	user_id BIGSERIAL NOT NULL, 
+	username VARCHAR(50) NOT NULL, 
+	mobile VARCHAR(20), 
+	email VARCHAR(100), 
+	password_hash VARCHAR(128) NOT NULL, 
+	salt VARCHAR(32) NOT NULL, 
+	nickname VARCHAR(50), 
+	avatar_url VARCHAR(255), 
+	gender SMALLINT NOT NULL, 
+	birthday DATE, 
+	register_source SMALLINT NOT NULL, 
+	register_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	last_login_time TIMESTAMP WITHOUT TIME ZONE, 
+	last_login_ip VARCHAR(50), 
+	status SMALLINT NOT NULL, 
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
+	is_deleted SMALLINT NOT NULL, 
+	CONSTRAINT pk_usr_user PRIMARY KEY (user_id), 
+	CONSTRAINT uq_usr_user_username UNIQUE (username), 
+	CONSTRAINT uq_usr_user_mobile UNIQUE (mobile), 
+	CONSTRAINT uq_usr_user_email UNIQUE (email)
 );
 
 CREATE TABLE log_delivery_route (
